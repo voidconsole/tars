@@ -1,0 +1,6 @@
+ignore this bsss
+"
+:) hello world this is a single line comment
+:) weeeeeeeeeeee
+:) damn this cute
+"
