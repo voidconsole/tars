@@ -19,11 +19,19 @@
 - predict	Inference command
 - custom {}	Advanced options (loss, optimizer, etc.) // could ignore this, as we can embed this in the definition of the ai construction
 
-# the stuff i dont get but we need for the AI as in the 
+# the stuff i dont get but we need for the AI as in the  [Note: the parameters don't include some stuff like loss function, learning rates, etc.]
 1. Regression modal => parameters =>
     i)type of regression
     ii)algorithm for regression
 2. Classification modal => parameters =>
     i)type of neural network for classification
-3. LLM => parameters =>
+    ii)algorithm for classification
+    iii) temperature
+4. LLM => parameters =>
+    i) no. of tokens
+    ii) randomness
+    iii) decoding type (how the next word is chosen basically)
+    iv)temperature
+5. Multimodal AIs => parameters =>
+    i)mix of some of the parameters above
     
