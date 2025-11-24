@@ -1,0 +1,12 @@
+"basically here we have configurations for tars framework, like whether to run directly on js, or compile to python. Plus, other needed settings."
+{
+  "mode": "interpreter/compiler", 
+  "python_version": "3.9",
+  "dependencies": {
+    "some_library": "1.0.0"
+  },
+  "settings": {
+    "optimize": true,
+    "debug": false
+  }
+}
