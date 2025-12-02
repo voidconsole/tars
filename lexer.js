@@ -3,10 +3,6 @@ let location = [];
 function lex(input) {
     const tokens = [];
     const lines = input.split("\n");
-    lines.forEach((line, index) => {
-	console.log(`Line ${index + 1}: ${line}`);
-	// Tokenization logic would go here
-    });
     return tokens;
 }
 export default lex;
