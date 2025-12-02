@@ -4,8 +4,8 @@
 // commands {
 // 	assignment { 
 // syntax:== $identifier = $limitor$value$limitor
-// 		String,  $limitor = ", ' . `  \([A-Za-z])\w+[^\S\r\n]*=[^\S\r\n]*(('.+')|".+")|(`.+`))\
-// 		Number {Int, Float, Complex}, $limitor = none match intergers, decimals, complex numbers
+// 		String,  $limitor = ", ' . `  \([A-Za-z])\w+[^\S\r\n]*=[^\S\r\n]*c\
+// 		Number {Int, Float, Complex}, $limitor = ([A-Za-z])\w+[^\S\r\n]*=[^\S\r\n]*([0-9]+\.?[0-9]*)  TODO: Complex numbers
 // 		Array, $limitor = [ ]
 // 		Object, $limitor = { }
 // 		Function, $limitor = (){ }
