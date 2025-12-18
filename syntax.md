@@ -6,7 +6,7 @@
 variableName = value
 ```
 
-A variable may hold any datatype: string, number, float, array, object, matrix, sheet, CSV, fluxion, function reference, etc.
+A variable may hold any datatype: string, number, float, array, object, matrix, lattice, CSV, fluxion, function reference, etc.
 
 ---
 
@@ -135,12 +135,12 @@ Representing:
 
 ---
 
-# Sheet
+# lattice
 
 ## Structure / Syntax
 
 ```
-mySheet = <
+mylattice = <
   ColumnA:[row1, row2, row3],
   ColumnB:[row1, row2, row3],
   ColumnC:[row1, row2, row3]
@@ -255,8 +255,6 @@ These operators apply to all numeric-compatible types and, where appropriate, st
 *=   multiply and assign
 /=   divide and assign
 ^=   exponentiate and assign
-!=   invert or negate and assign
-~=   adjust flux tolerance and assign
 ```
 
 ## Pipeline
@@ -334,6 +332,7 @@ Standard comparisons:
 <    less than
 >=   greater or equal
 <=   less or equal
+~=   approximately equal to
 ```
 
 Used inside conditions:
@@ -493,5 +492,8 @@ if (sensorData -> normalize -> clamp ~= 0) {
 	safe = true
 }
 ```
+# standard output and input
+>>> STD-OUT
+<<< STD-IN
 
 ---
