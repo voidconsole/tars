@@ -1,36 +1,39 @@
-hello = "inevitable"
-lets gooo
-suppppp
-okay so this is a {
-	nested styuff
-	and more styuf
-	lesfoo
-}
-um hi =  < some stuff, 
-not stuff >
-hep()
-this is firew ngl
-like {{
-	suppppp
-}
-	hello world
-	(
-		can i do this?
-	)
-	{ [ ( hello world)]}
-}
-hiiiiyooo = 23234
-:) hello world this is a single line comment
-:|
-hello world
-|:
-hi = bye
-butthis = "can mind spaces"
+:) Define a few variables
+name = "Alice"
+age = 25
+is_student = True
 
-like if (){
-	i can detecte this?
+:) If-else statements
+if (age = 18) {
+	status = "minor"
+}
+else if (age = 65)
+{
 
-} else if () {
-	
-	
+	status = "adult"
+}
+else{
+
+	status = "senior"
+}
+eetice = | stuff heree, 
+and do stuff here, cause why not;
+ |
+if (is_student){
+
+	print(f"{name} is a student.")
+}
+else{
+
+	print(f"{name} is not a student.")
+}
+
+:) For loop
+numbers = [1, 2, 3, 4, 5]
+for (num in numbers)
+
+
+{
+	:) can i 
+	print(f"Number: {num}")
 }

@@ -2,8 +2,9 @@ import bufferer from "./bufferer.js"
 function parse(input) {
 	input = input.replace(/\r\n/g, "\n").replace(/\r/g, "\n") + "\n"
 	var buffer = []
+	var subBuffer = []
 	var commandNum = 0
-	var depthAngular = 0
+	var inLattice = false
 	var depthCurly = 0
 	var depthSquare = 0
 	var depthParen = 0
@@ -12,11 +13,10 @@ function parse(input) {
 	var inSingleComment = false
 	var inMultiComment = false
 	var meta = {
-		angular: false,
 		curly: false,
 		square: false,
 		paren: false,
-		angular: false,
+		lattice: false,
 		equals: false,
 	}
 
@@ -28,36 +28,41 @@ function parse(input) {
 			}
 			continue
 		} else {
-			buffer.push(char)
+			if (!inSingleComment && !inMultiComment){
+				buffer.push(char)
+			}else{
+				subBuffer.push(char)
+			}
+			// console.log(`Char: "${char}"| Buffer: ${buffer.join('')}`)
 		}
 		if (char === ":" && (input[i + 1] === ")" || input[i + 1] === "|")) {
 			inSingleComment = input[i + 1] === ")"
 			inMultiComment = input[i + 1] === "|"
+			buffer.pop() // remove : from buffer
+			
+			subBuffer.push(char)
 			continue
 		}
 		if (char === "\n" && inSingleComment) {
 			inSingleComment = false
 			//TODO: handle single line comment buffer if needed
-			console.log("Single line comment skipped.", buffer)
-			buffer = []
+			console.log("Single line got here in sub:", subBuffer.join("").trim())
+			subBuffer = []
 			continue
 		}
 		if (char === ":" && input[i - 1] === "|" && inMultiComment) {
 			inMultiComment = false
 			//TODO: handle multi line comment buffer if needed
-			console.log("Multi line comment skipped.", buffer)
-			buffer = []
+			console.log("Multi line comment got here:", subBuffer.join("").trim())
+			subBuffer = []
 			continue
 		}
 		if (!inSingleComment && !inMultiComment) {
 			if (!inString) {
 				switch (char) {
-					case "<":
-						depthAngular++
-						meta.angular = true
-						break
-					case ">":
-						depthAngular--
+					case "|":
+						meta.lattice = true
+						inLattice = !inLattice
 						break
 					case "{":
 						meta.curly = true
@@ -94,27 +99,35 @@ function parse(input) {
 			if (("'" + "`" + '"').includes(char) && !inString)
 				[inString, stringChar] = [true, char]
 			else if (char === stringChar) [inString, stringChar] = [false, null]
+
+			
 			if (
 				char === "\n" &&
 				!inString &&
-				depthAngular === 0 &&
+				!inLattice &&
 				depthCurly === 0 &&
 				depthSquare === 0 &&
 				depthParen === 0 &&
 				buffer.length > 1
 			) {
+				buffer.pop() // remove newline
 				let bufferStr = buffer.join("").trim()
 				if (
 					bufferStr !== "" &&
-					bufferStr != null &&
+					bufferStr !== null &&
 					bufferStr !== "\n"
 				) {
+					if((bufferStr.startsWith("if") || bufferStr.startsWith("for") || bufferStr.startsWith("while") || bufferStr.startsWith("else")) && bufferStr.endsWith(")")){
+						// likely a control statement that should include the next block
+						console.log("Control statement detected, waiting for block...")
+						continue
+					}
 					commandNum++
-					console.log(commandNum + bufferStr)
+					console.log(commandNum + " __" + bufferStr+"__ ")
 					bufferer(bufferStr, meta)
 					buffer = []
 					meta = {
-						angular: false,
+						lattice: false,
 						curly: false,
 						square: false,
 						paren: false,
@@ -125,8 +138,15 @@ function parse(input) {
 					)
 					
 				}
+buffer = []
+
+
+
 			}
 		}
 	}
 }
+
+
 export default parse
+

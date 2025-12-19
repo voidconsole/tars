@@ -115,11 +115,11 @@ Annotations, explanations, temporary disabling of code sections.
 ## Structure / Syntax
 
 ```
-myMatrix = <
+myMatrix = |
   [r1c1, r1c2, r1c3],
   [r2c1, r2c2, r2c3],
   [r3c1, r3c2, r3c3]
->
+|
 ```
 
 A rectangular 2D grid. All rows must have equal length.
@@ -140,11 +140,11 @@ Representing:
 ## Structure / Syntax
 
 ```
-mylattice = <
+mylattice = |
   ColumnA:[row1, row2, row3],
   ColumnB:[row1, row2, row3],
   ColumnC:[row1, row2, row3]
->
+|
 ```
 
 Column-oriented tabular data. Every column must have the same number of rows.
@@ -165,11 +165,11 @@ Useful for:
 ## Structure / Syntax
 
 ```
-myCsv = <
+myCsv = |
   a1, a2, a3;
   b1, b2, b3;
   c1, c2, c3
->
+|
 ```
 
 Row-oriented simple table.
