@@ -17,12 +17,12 @@ function parse(input) {
 		square: false,
 		paren: false,
 		lattice: false,
-		equals: false,
+		pureEquals: false,
 	}
 
 	for (let i = 0; i < input.length; i++) {
 		const char = input[i]
-		if (char === "\t" || char === "\v") {
+		if (char === "\t") { // ignore tabs
 			if (inSingleComment || inMultiComment || inString) {
 				buffer.push(char)
 			}
@@ -32,31 +32,33 @@ function parse(input) {
 				buffer.push(char)
 			}else{
 				subBuffer.push(char)
+				//secondary buffer for comments
 			}
 			// console.log(`Char: "${char}"| Buffer: ${buffer.join('')}`)
 		}
-		if (char === ":" && (input[i + 1] === ")" || input[i + 1] === "|")) {
+		if (char === " " && inMultiComment) { continue }
+		else if (char === ":" && (input[i + 1] === ")" || input[i + 1] === "|")) {
 			inSingleComment = input[i + 1] === ")"
 			inMultiComment = input[i + 1] === "|"
 			buffer.pop() // remove : from buffer
-			
 			subBuffer.push(char)
 			continue
 		}
-		if (char === "\n" && inSingleComment) {
+		else if (char === "\n" && inSingleComment) {
 			inSingleComment = false
 			//TODO: handle single line comment buffer if needed
 			console.log("Single line got here in sub:", subBuffer.join("").trim())
 			subBuffer = []
 			continue
 		}
-		if (char === ":" && input[i - 1] === "|" && inMultiComment) {
+		else if (char === ":" && input[i - 1] === "|" && inMultiComment) {
 			inMultiComment = false
 			//TODO: handle multi line comment buffer if needed
 			console.log("Multi line comment got here:", subBuffer.join("").trim())
 			subBuffer = []
 			continue
-		}
+		} 
+
 		if (!inSingleComment && !inMultiComment) {
 			if (!inString) {
 				switch (char) {
@@ -86,21 +88,17 @@ function parse(input) {
 						depthParen--
 						break
 					case "=":
-						meta.equals = true
+						if (!meta.curly && !meta.paren && !meta.square && !meta.lattice) {
+							// equals outside of any structure
+							meta.pureEquals = true
+						}						
 						break
 				}
-				// console.log(
-				// 	depthAngular,
-				// 	depthCurly,
-				// 	depthSquare,
-				// 	depthParen
-				// )
 			}
 			if (("'" + "`" + '"').includes(char) && !inString)
 				[inString, stringChar] = [true, char]
 			else if (char === stringChar) [inString, stringChar] = [false, null]
 
-			
 			if (
 				char === "\n" &&
 				!inString &&
@@ -116,14 +114,18 @@ function parse(input) {
 					bufferStr !== "" &&
 					bufferStr !== null &&
 					bufferStr !== "\n"
-				) {
-					if((bufferStr.startsWith("if") || bufferStr.startsWith("for") || bufferStr.startsWith("while") || bufferStr.startsWith("else")) && bufferStr.endsWith(")")){
-						// likely a control statement that should include the next block
-						console.log("Control statement detected, waiting for block...")
-						continue
+				) { //removing empty commands
+
+
+					if((bufferStr.startsWith("if") || bufferStr.startsWith("for") || bufferStr.startsWith("while") || bufferStr.startsWith("else if") || meta.pureEquals) && bufferStr.endsWith(")")){
+						// console.log("Control statement detected, waiting for block...")
+						// does NOT handle } else if /n {...}  and nor else /n {...}
+						continue // wait for upcoming block
 					}
+
+
 					commandNum++
-					console.log(commandNum + " __" + bufferStr+"__ ")
+					console.log(commandNum + " __" + bufferStr + "__ ")
 					bufferer(bufferStr, meta)
 					buffer = []
 					meta = {
@@ -131,17 +133,13 @@ function parse(input) {
 						curly: false,
 						square: false,
 						paren: false,
-						equals: false,
+						pureEquals: false,
 					}
 					console.log(
-						"---------------------------------------------------------------------------\n"
-					)
-					
+						"-------------------------------------------------------------------------------\n"
+					)	
 				}
-buffer = []
-
-
-
+				buffer = []
 			}
 		}
 	}

@@ -99,9 +99,9 @@ Encapsulation of repeated logic, transformations, math utilities.
 ## Multi-Line
 
 ```
-:(
+:|
    multiple lines of documentation
-:)
+|:
 ```
 
 ## Use-Case
@@ -206,7 +206,7 @@ temp = 30 ~ 5        // meaning: 30 with ±5 variation
 
 ```
 choice = maybe
-chance = maybe 0.3   // 30% weight or likelihood
+chance = maybe ~ 0.3   // 30% weight or likelihood
 ```
 
 ## Use-Case
@@ -302,7 +302,7 @@ if (condition) {
 
 -   Parentheses contain any valid expression that returns a boolean or flux-evaluated boolean.
 -   Blocks must explicitly return or mutate something depending on context.
-
+-   `else if` or `else` blocks must start at newline or must include `{` at the end of line.
 ## Use-Case
 
 Regular branching logic.
@@ -494,6 +494,6 @@ if (sensorData -> normalize -> clamp ~= 0) {
 ```
 # standard output and input
 >>> STD-OUT
-<<< STD-IN
+?? STD-IN
 
 ---

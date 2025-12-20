@@ -1,39 +1,35 @@
 :) Define a few variables
-name = "Alice"
+name = <<< "ya name?"
 age = 25
-is_student = True
+is_student =   True
 
 :) If-else statements
-if (age = 18) {
-	status = "minor"
-}
-else if (age = 65)
-{
-
-	status = "adult"
-}
-else{
-
-	status = "senior"
-}
-eetice = | stuff heree, 
+leetice = | stuff heree, 
 and do stuff here, cause why not;
  |
+
+hello()
+
+func = () {
+	:| do stuff here |:
+}
+
 if (is_student){
 
-	print(f"{name} is a student.")
+	 `{name} is a student.`
 }
-else{
-
-	print(f"{name} is not a student.")
+else if (hello wrold = huyyhhh)
+{
+	>>> `{name} is not a student.`
 }
+obj = {stuff}
 
 :) For loop
 numbers = [1, 2, 3, 4, 5]
 for (num in numbers)
-
-
 {
 	:) can i 
 	print(f"Number: {num}")
 }
+
+>>> "suppppp"
