@@ -1,38 +1,74 @@
 // match the input buffer from parser against patterns from hyposyn
 import { syntax } from "./detector.js"
-
+import * as handler from "./handler.js"
 function bufferer(buffer, meta) {
-	meta.newline == buffer.includes("\n")
+	// TODO: reduce load later cause buffer is already scanned for if while for etc.
+	if (buffer.startsWith(">>>")) {
+		// stdout
+		console.log("STDOUT detected")
+		handler.stdout(buffer.slice(3).trim())
+	} else if (buffer.startsWith("???")) {
+		// stdin
+		console.log("STDIN detected")
+		handler.stdin(buffer.slice(3).trim())
+	}
+	else if (buffer.startsWith("for")) {
+		// for loop
+		console.log("For loop detected")
+	}
+	else if (buffer.startsWith("if")) {
+		// if statement
+		console.log("If statement detected")
+	}
+	else if (buffer.startsWith("while")) {
+		// while loop
+		console.log("While loop detected")
+	}
+	else if (buffer.startsWith("else")) {
+		// else or else if statement
 
-// TODO: rerewrite the hierrachy completely cause rn doesnt make sense and does not handle single line objs etc. 
-// Make flow chart first. Figjam.
-	if (meta.newline) {
-		//conditionals, loops, functions defs, objects, lattices,
-		console.log("Multiline buffer detected, handling each line separately.")
-		if (meta.equals) {
-			//objects, lattices, functions defs.
-			console.log("Assignment detected in multiline buffer.")
-			if (meta.curly) {
-				console.log("Object/function/loop/conditional possibility.")
-				if (meta.paren) {
-					console.log("Function possibility.")
-				}
-			} else if (meta.angular) {
-				console.log("Lattice possibility.")
-			}
-		} else {
-			//conditionals, loops
+		if (buffer.startsWith("else if")) {
+			// else if statement
+			console.log("Else if statement detected")
+		}else {
+			// else statement
+			console.log("Else statement detected")}
+	}
+	else if (meta.paren) {
+		// function call or declaration
+		if (meta.curly) {
+			// function declaration
+			console.log("Function declaration detected")
+		} else if (!meta.pureEquals) {
+			// function call
+			console.log("Function call detected")
 		}
-	} else if (meta.equals) {
-		// strings, integers, null, undefined, flux, arrays, func calls
-		console.log("String, integer, null or undefined possibility.")
-		if (meta.square) {
-			// arrays
-			console.log("Array possibility.")
+	}
+	else if (meta.curly) {
+		// object or block
+		if (meta.pureEquals) {
+			// object
+			console.log("Object detected")
+		} else {
+			// block
+			console.log("Block detected")
+		}
+	}
+	else if (meta.pureEquals) {
+		if (meta.lattice) {
+			// Lattice 
+			console.log("Lattice detected")
+		}
+		else if (meta.square) {
+			// array
+			console.log("Array detected")
+		} else {
+			//strin int
+			console.log("String/int Assignment detected")
 		}
 	} else {
-		//function calls
-		console.log("Function call or expression possibility.")
+		console.log("Urecognized command")
 	}
 }
+
 export default bufferer
