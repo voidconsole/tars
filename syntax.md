@@ -1,3 +1,7 @@
+# Filename
+script.star
+Anagram of tars
+
 # Variables
 
 ## Structure / Syntax

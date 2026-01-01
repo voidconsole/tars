@@ -1,150 +1,179 @@
-import bufferer from "./bufferer.js"
+import dispatch from "./dispatcher.js"
+
 function parse(input) {
-	input = input.replace(/\r\n/g, "\n").replace(/\r/g, "\n") + "\n"
-	var buffer = []
-	var subBuffer = []
-	var commandNum = 0
-	var inLattice = false
-	var depthCurly = 0
-	var depthSquare = 0
-	var depthParen = 0
-	var inString = false
-	var stringChar = null
-	var inSingleComment = false
-	var inMultiComment = false
-	var meta = {
-		curly: false,
-		square: false,
-		paren: false,
-		lattice: false,
-		pureEquals: false,
-	}
+    // Standardize newlines and add a terminal newline for final flush
+    input = input.replace(/\r\n/g, "\n").replace(/\r/g, "\n") + "\n";
 
-	for (let i = 0; i < input.length; i++) {
-		const char = input[i]
-		if (char === "\t") { // ignore tabs
-			if (inSingleComment || inMultiComment || inString) {
-				buffer.push(char)
-			}
-			continue
-		} else {
-			if (!inSingleComment && !inMultiComment){
-				buffer.push(char)
-			}else{
-				subBuffer.push(char)
-				//secondary buffer for comments
-			}
-			// console.log(`Char: "${char}"| Buffer: ${buffer.join('')}`)
-		}
-		if (char === " " && inMultiComment) { continue }
-		else if (char === ":" && (input[i + 1] === ")" || input[i + 1] === "|")) {
-			inSingleComment = input[i + 1] === ")"
-			inMultiComment = input[i + 1] === "|"
-			buffer.pop() // remove : from buffer
-			subBuffer.push(char)
-			continue
-		}
-		else if (char === "\n" && inSingleComment) {
-			inSingleComment = false
-			//TODO: handle single line comment buffer if needed
-			console.log("Single line got here in sub:", subBuffer.join("").trim())
-			subBuffer = []
-			continue
-		}
-		else if (char === ":" && input[i - 1] === "|" && inMultiComment) {
-			inMultiComment = false
-			//TODO: handle multi line comment buffer if needed
-			console.log("Multi line comment got here:", subBuffer.join("").trim())
-			subBuffer = []
-			continue
-		} 
+    var buffer = [];
+    var commandNum = 0;
+    var inLattice = false;
+    var depthCurly = 0;
+    var depthSquare = 0;
+    var depthParen = 0;
+    var inString = false;
+    var stringChar = null;
+    var inSingleComment = false;
+    var inMultiComment = false;
+    var skipFlush = false;
 
-		if (!inSingleComment && !inMultiComment) {
-			if (!inString) {
-				switch (char) {
-					case "|":
-						meta.lattice = true
-						inLattice = !inLattice
-						break
-					case "{":
-						meta.curly = true
-						depthCurly++
-						break
-					case "}":
-						depthCurly--
-						break
-					case "[":
-						meta.square = true
-						depthSquare++
-						break
-					case "]":
-						depthSquare--
-						break
-					case "(":
-						meta.paren = true
-						depthParen++
-						break
-					case ")":
-						depthParen--
-						break
-					case "=":
-						if (!meta.curly && !meta.paren && !meta.square && !meta.lattice) {
-							// equals outside of any structure
-							meta.pureEquals = true
-						}						
-						break
-				}
-			}
-			if (("'" + "`" + '"').includes(char) && !inString)
-				[inString, stringChar] = [true, char]
-			else if (char === stringChar) [inString, stringChar] = [false, null]
+    var meta = {
+        curly: false,
+        square: false,
+        paren: false,
+        lattice: false,
+        pureEquals: false,
+        pivot: null
+    };
 
-			if (
-				char === "\n" &&
-				!inString &&
-				!inLattice &&
-				depthCurly === 0 &&
-				depthSquare === 0 &&
-				depthParen === 0 &&
-				buffer.length > 1
-			) {
-				buffer.pop() // remove newline
-				let bufferStr = buffer.join("").trim()
-				if (
-					bufferStr !== "" &&
-					bufferStr !== null &&
-					bufferStr !== "\n"
-				) { //removing empty commands
+    for (let i = 0; i < input.length; i++) {
+        const charCode = input.charCodeAt(i);
+        const char = input[i];
+
+        if (charCode === 9) { // '\t'
+            if (inSingleComment || inMultiComment || inString) buffer.push(char);
+            continue;
+        }
 
 
-					if((bufferStr.startsWith("if") || bufferStr.startsWith("for") || bufferStr.startsWith("while") || bufferStr.startsWith("else if") || meta.pureEquals) && bufferStr.endsWith(")")){
-						// console.log("Control statement detected, waiting for block...")
-						// does NOT handle } else if /n {...}  and nor else /n {...}
-						continue // wait for upcoming block
-					}
+        if (!inSingleComment && !inMultiComment) {
+            //TODO if newline and not in string, lattice, then dont push buffer
 
+            buffer.push(char); // only push if not in comment
+        }
 
-					commandNum++
-					console.log(commandNum + " __" + bufferStr + "__ ")
-					bufferer(bufferStr, meta)
-					buffer = []
-					meta = {
-						lattice: false,
-						curly: false,
-						square: false,
-						paren: false,
-						pureEquals: false,
-					}
-					console.log(
-						"-------------------------------------------------------------------------------\n"
-					)	
-				}
-				buffer = []
-			}
-		}
-	}
+        // Detect Comment Starts: ":" followed by ")" or "|"
+        if (charCode === 58 && !inString) { // :
+            const nextCode = input.charCodeAt(i + 1);
+            if (nextCode === 41 || nextCode === 124) { // ) or |
+                inSingleComment = nextCode === 41; // ":)"
+                inMultiComment = nextCode === 124; // ":|" 
+                buffer.pop(); // Remove the ":" from the command buffer
+                continue;
+            }
+        }
+
+        if (inSingleComment && charCode === 10) { // \n Newline ends single-line comment
+            inSingleComment = false;
+            // continue;
+        }
+        if (inMultiComment && charCode === 58 && input.charCodeAt(i - 1) === 124) { // "|:" ends multi-line
+            inMultiComment = false;
+            continue;
+        }
+
+        if (!inSingleComment && !inMultiComment) {
+            if (!inString) {
+                switch (charCode) {
+                    case 61: // '='
+                        if (depthCurly === 0 && depthParen === 0 && depthSquare === 0 && !inLattice) {
+                            meta.pureEquals = true;
+                        }
+                        break;
+                    case 124: // '|'
+                        meta.lattice = true;
+                        inLattice = !inLattice;
+                        break;
+                    case 123: // '{'
+                        meta.curly = true;
+                        depthCurly++;
+                        break;
+                    case 125: // '}'
+                        depthCurly--;
+                        if (depthCurly === 0) {
+                            const next = peek(input, i + 1);
+                            // Robust check for 'else' chain
+                            skipFlush = (next.char === 'e' && input.startsWith("else", next.index));
+                        }
+                        break;
+                    case 91: // '['
+                        meta.square = true;
+                        depthSquare++;
+                        break;
+                    case 93: // ']'
+                        depthSquare--;
+                        break;
+                    case 40: // '('
+                        meta.paren = true;
+                        depthParen++;
+                        break;
+                    case 41: // ')'
+                        depthParen--;
+                        if (depthParen === 0) {
+                            const next = peek(input, i + 1);
+                            // Check for function body start: () { ... }
+                            skipFlush = (next.char === '{');
+                            if (skipFlush) meta.pivot = buffer.length
+                        }
+                        break;
+                    case 63: // '?'
+                        
+                    
+                }
+            }
+
+            // 39 = ', 34 = ", 96 = `
+            if ((charCode === 39 || charCode === 34 || charCode === 96) && !inString) {
+                inString = true;
+                stringChar = char;
+            } else if (char === stringChar) {
+                inString = false;
+                stringChar = null;
+            }
+
+            // Flushing if charcode = \n
+            if (charCode === 10 && !inString && !inLattice &&
+                depthCurly === 0 && depthSquare === 0 && depthParen === 0) {
+
+                buffer.pop(); // remove trailing newline
+                let bufferStr = buffer.join("").trim();
+
+                if (bufferStr.length > 0 && !skipFlush) {
+                    commandNum++;
+                    console.log(`${commandNum} ⚜️  ${bufferStr} ⚜️`);
+                    dispatch(bufferStr, meta);
+
+                    // Reset state for next command
+                    buffer = [];
+                    meta = { lattice: false, curly: false, square: false, paren: false, pureEquals: false, pivot: null };
+                    console.log("-------------------------------------------------------------------------------\n");
+                } else if (!skipFlush) {
+                    buffer = []; // Clear whitespace-only buffers
+                }
+            }
+        }
+    }
 }
 
 
-export default parse
+function peek(input, startIndex) {
+    let j = startIndex;
+    while (j < input.length) {
+        const code = input.charCodeAt(j);
 
+        // skip whitespace (Space, Tab, LF, CR)
+        if (code === 32 || code === 9 || code === 10 || code === 13) {
+            j++;
+            continue;
+        }
+
+        if (code === 58) { // ':'
+            const nextCode = input.charCodeAt(j + 1);
+            if (nextCode === 41) { // ':)' Single-line
+                j = input.indexOf("\n", j + 2);
+                if (j === -1) break;
+                continue;
+            }
+            if (nextCode === 124) { // ':|' Multi-line
+                const end = input.indexOf("|:", j + 2);
+                if (end === -1) break;
+                j = end + 2;
+                continue;
+            }
+        }
+
+        return { char: input[j], index: j };
+    }
+    return { char: null, index: -1 };
+}
+
+export default parse;

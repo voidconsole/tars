@@ -17,7 +17,7 @@ const syntaxAdv = {
     else: /^else[^\S\r\n]*\{(.*)\}$/m,
     //loops
 
-    for: /^for[^\S\r\n]*\((.*)\)[^\S\r\n]*\{(.*)\}$/m,
+    for: /^for[^\S\r\n]*\((.*?)\)[^\S]*\{([^S]*)\}$/,
     while: /^while[^\S\r\n]*\(.*\)[^\S\r\n]*\{(.*)\}$/m,
     //function call
     call: /^[A-Za-z]\w*[^\S\r\n]*\((.*)\)$/,
@@ -54,4 +54,4 @@ const syntax = {
 // 	functionCall { syntax :== $identifier ( $args )  }
 // }
 // Write regex patterns for each of the above syntax types and commands to be used in the lexer for tokenization.
-export { syntax }
+export { syntax, syntaxAdv }

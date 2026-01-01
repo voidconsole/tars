@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "deno run --watch=./main.js,./input.tars --allow-read=input.tars main.js"
+    "dev": "deno run --watch=./main.js,./input.star --allow-read=input.star main.js"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@1"
