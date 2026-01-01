@@ -367,7 +367,8 @@ A and B are within tolerance.
 2. If B is `value ~ tol`, tolerance is `tol`.
 3. If both are fuzzy, tolerances add.
 4. If one side is crisp (just a number/string), tolerance comes from the fuzzy side.
-5. Approx check succeeds when:
+5. Tolerences behave akin to approximate values in physics. 
+6. Approx check succeeds when:
 
 ```
 abs(A.value - B.value) <= combinedTolerance
@@ -387,7 +388,7 @@ if (reading ~= targetTemp) {
 	status = "stable"
 }
 ```
-
+_Future release: Randomness is generated with specified methods, tolerences, roll etc_
 ---
 
 # Maybe Checks (Probabilistic Truth)
@@ -408,7 +409,7 @@ Where:
 ### Behavior:
 
 ```
-value ?    returns true with probability p
+value     returns true with probability p
 ```
 
 ## Use-Case
@@ -420,7 +421,7 @@ Example:
 ```
 wander = maybe 0.2
 
-if (wander ?) {
+if (wander) {
 	action = "randomMove"
 } else {
 	action = "followPath"
@@ -463,14 +464,27 @@ if (speed in limit) {
 ```
 
 ---
+# Probabilistic keywords:
+1. ``` why(fluxVal) ```
+Returns value of a fluxVal at runtime. 
+_Future release: Randomness is generated with specified methods, tolerences, roll etc_
 
+2. ```seed()```
+Creates a seed for a flux value to reproduce events. Seed is random by default unless fixed.
+```
+fluxy = 10 ~ 0.5 :) random seed by default 
+@sensor = "random string"  :) generates a hash for that string and uses it as seed.
+seededFluxy = 10 ~ 0.5 @sensor
+
+```
+---
 # Combined Conditionals
 
 All boolean logic works:
 
 ```
-&&   logical and
-||   logical or
+AND   logical and
+OR   logical or
 !    negate
 ```
 

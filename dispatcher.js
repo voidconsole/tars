@@ -71,13 +71,20 @@ function dispatch(buffer, meta) {
             console.log("Object assignment detected");
 
         } else if (!buffer.includes("\n")) {
-            console.log("String/Number assignment detected");
-        }
+            console.log("String/Number/(maybe) ARRAY assignment detected");
+
+	} else if (buffer.charCodeAt(0) === 64) {
+	    console.log("SEED creation detected");
+	    return handler.seedCreator(buffer.slice(1).trim());
+	}
 
     } else if (meta.paren && !meta.pureEquals) {
         console.log("Function call detected");
         return;
-    } else {
+    } 
+    // TODO: check for things like hello++ or --hello or hello+=1 etc.  
+    else {
+	
              throw new SyntaxError("This command is not a valid syntax: " + buffer);
             
         // throw new Error("Unrecognized syntax structure:", buffer);
