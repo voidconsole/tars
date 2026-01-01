@@ -92,9 +92,7 @@ function dispatch(buffer, meta) {
     } 
     // TODO: check for things like hello++ or --hello or hello+=1 etc.  
     else {
-	
              throw new SyntaxError("This command is not a valid syntax: " + buffer);
-            
         // throw new Error("Unrecognized syntax structure:", buffer);
     }
 }
