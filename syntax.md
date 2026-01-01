@@ -80,12 +80,11 @@ Configuration structures, grouped data, dictionaries, parameter maps.
 
 ```
 hello = (param1, param2) {
-	return expression
+	<- expression
 }
 ```
-
-Functions are first-class values assigned to variables.
-
+- Functions are declared by assigning them to a variable name by which they will be invoked ```hello(param1, param2)```
+- The last line of the function is automatically returned if its a valid expression, or may use <- to explicitly return it.
 ## Use-Case
 
 Encapsulation of repeated logic, transformations, math utilities.
@@ -303,8 +302,6 @@ if (condition) {
 
 -   Parentheses contain any valid expression that returns a boolean or flux-evaluated boolean.
 -   Blocks must explicitly return or mutate something depending on context.
--   `else if` or `else` blocks must start at newline or must include `{` at the end of line.
-
 - **OPTIONAL Parenthesis**, thus 
 ```
 if condition {
@@ -312,6 +309,7 @@ if condition {
 }
 ```
 is also valid.
+- If parentheses are omitted, statements must include `{` at the end of line.
 
 ## Use-Case
 
@@ -517,7 +515,9 @@ if (sensorData -> normalize -> clamp ~= 0) {
 }
 ```
 # standard output and input
->>> STD-OUT
-?? STD-IN
-
+```
+>>> "This will be the startard output"
+input = ?? 
+input2 = ?? "This optional message will be prompted via standard input"
+```
 ---
