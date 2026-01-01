@@ -304,6 +304,15 @@ if (condition) {
 -   Parentheses contain any valid expression that returns a boolean or flux-evaluated boolean.
 -   Blocks must explicitly return or mutate something depending on context.
 -   `else if` or `else` blocks must start at newline or must include `{` at the end of line.
+
+- **OPTIONAL Parenthesis**, thus 
+```
+if condition {
+	...block...
+}
+```
+is also valid.
+
 ## Use-Case
 
 Regular branching logic.
