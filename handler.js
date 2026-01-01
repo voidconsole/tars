@@ -5,9 +5,9 @@ function stdin(input) {
 	return prompt(input)
 }
 function forLoop(expression, block) {
-	console.log("For loop parameters:", expression, block)
+	console.log("For loop parameters:", expression+ "--" + block)
 }
-function assignment(name, value) {
-	console.log("Assignment parameters:", name, value)
+function assignment(name, value, type="simple") {
+	console.log("Assignment parameters:", name+" -- " + value)
 }
 export {stdout, stdin, forLoop, assignment};

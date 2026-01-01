@@ -3,7 +3,8 @@ import * as handler from "./handler.js";
 function dispatch(buffer, meta) {
     const len = buffer.length;
     const c0 = buffer.charCodeAt(0);
-
+    // TODO: Perform simple regex and manual checks to verify syntax structure
+    // TODO: Later, allow optional parentheses
 
     if (buffer.charCodeAt(0) === 62 && buffer.charCodeAt(1) === 62 && buffer.charCodeAt(2) === 62) {
         console.log("STDOUT detected");
@@ -66,12 +67,20 @@ function dispatch(buffer, meta) {
         }
         else if (meta.square) {
             console.log("Array assignment detected");
+            handler.assignment(buffer.split("=")[0].trim(), buffer.split("=")[1].trim(), "array");
+
+            return;
         }
         else if (meta.curly) {
             console.log("Object assignment detected");
+            handler.assignment(buffer.split("=")[0].trim(), buffer.split("=")[1].trim(), "object");
+
+            return;
 
         } else if (!buffer.includes("\n")) {
             console.log("String/Number assignment detected");
+            handler.assignment(buffer.split("=")[0].trim(), buffer.split("=")[1].trim());
+            return;
         }
 
     } else if (meta.paren && !meta.pureEquals) {
@@ -79,6 +88,7 @@ function dispatch(buffer, meta) {
         return;
     } else {
              throw new SyntaxError("This command is not a valid syntax: " + buffer);
+            
             
         // throw new Error("Unrecognized syntax structure:", buffer);
     }
