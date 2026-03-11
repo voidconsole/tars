@@ -1,4 +1,4 @@
-# some stuff could use delete later
+# Supported libraries and functions via object methods (Future releases)
 
 data/
 ├── text/
@@ -127,5 +127,14 @@ advanced/
 ├── evolution/ → genetic model selection, neuroevolution
 ├── self_improving_loop/ → RLHF or looped training
 ├── society/ → multi-agent systems
+
+---
+math/
+├── trignometry/ → trig math functions
+├── calculus/ → integrals, derivatives, limits
+├── basic/ → basic fundamental functions
+├── complex/ → complex numbers
+├── algebra/ → algebriac objects, calculations, vectors, matricies tensors, etc
+├── arithmatic/ → combinaorics, primes etc
 
 ---

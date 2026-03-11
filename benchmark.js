@@ -4,7 +4,17 @@
 function bench(func, s, iterations=1000) {
   const t0 = globalThis.performance.now();
 
-  for (let i=0;i<iterations;i++) {func(s);console.log(`\n\n---------------------Iteration ${i+1} complete---------------------\n\n`)};
+  for (let i=0;i<iterations;i++) {
+            try {
+            
+            func(s);
+        } catch (error) {
+            console.error(error);
+        }
+    
+    
+    // console.log(`\n\n---------------------Iteration ${i+1} complete---------------------\n\n`)
+    };
   const t1 = globalThis.performance.now();
   return (t1 - t0) / iterations;
 }

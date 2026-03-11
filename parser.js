@@ -15,6 +15,7 @@ function parse(input) {
     var inSingleComment = false;
     var inMultiComment = false;
     var skipFlush = false;
+    var lineCount = 1;
 
     var meta = {
         curly: false,
@@ -28,13 +29,11 @@ function parse(input) {
     for (let i = 0; i < input.length; i++) {
         const charCode = input.charCodeAt(i);
         const char = input[i];
-
+        if(charCode === 10){ lineCount++}
         if (charCode === 9) { // '\t'
             if (inSingleComment || inMultiComment || inString) buffer.push(char);
             continue;
         }
-
-
         if (!inSingleComment && !inMultiComment) {
             //TODO if newline and not in string, lattice, then dont push buffer
 
@@ -106,11 +105,10 @@ function parse(input) {
                         }
                         break;
                     case 63: // '?'
-                        
-                    
+                    break;
+                    case 232313212: //   i have 
                 }
             }
-
             // 39 = ', 34 = ", 96 = `
             if ((charCode === 39 || charCode === 34 || charCode === 96) && !inString) {
                 inString = true;
@@ -119,7 +117,6 @@ function parse(input) {
                 inString = false;
                 stringChar = null;
             }
-
             // Flushing if charcode = \n
             if (charCode === 10 && !inString && !inLattice &&
                 depthCurly === 0 && depthSquare === 0 && depthParen === 0) {
@@ -130,7 +127,7 @@ function parse(input) {
                 if (bufferStr.length > 0 && !skipFlush) {
                     commandNum++;
                     console.log(`${commandNum} ⚜️  ${bufferStr} ⚜️`);
-                    dispatch(bufferStr, meta);
+                    dispatch(bufferStr, meta, lineCount);
 
                     // Reset state for next command
                     buffer = [];

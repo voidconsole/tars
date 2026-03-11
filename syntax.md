@@ -35,11 +35,12 @@ Storing UI labels, user input, file paths, serialized data.
 ```
 myNum = 34
 myFloat = 35.64
+mQuat = 1 + 2i + 3j + 4k
 ```
 
 ## Use-Case
 
-Counters, indices, physics values, configuration parameters.
+Counters, indices, physics values, quaternions, configuration parameters.
 
 ---
 
@@ -63,8 +64,8 @@ Lists of values, stacks, queues, arguments, nested structures.
 
 ```
 myObj = {
-	key1: value1;
-	key2: value2;
+	key1: value1,
+	key2: value2,
 }
 ```
 
@@ -221,6 +222,25 @@ Useful in:
 
 ---
 
+# Time
+Time is a fundamental property in Tars.
+Timers can be set, read, delayed, 
+
+```
+#timer1.start(00)
+#timer1.pause(12) :) pause for 12 seconds and then played.
+
+#timer1.pause() :) pause until played.
+#timer1.play()
+
+
+if #timer1 == 12 {
+	:) do stuff after 12 seconds
+}
+
+freeze() :) freeze all timers
+
+```
 # Operators
 
 These operators apply to all numeric-compatible types and, where appropriate, strings, arrays, and fluxions.
@@ -405,7 +425,7 @@ _Future release: Randomness is generated with specified methods, tolerences, rol
 ## Structure / Syntax
 
 ```
-if (value ?) { ... }
+if (value) { ... }
 ```
 
 Where:
@@ -517,7 +537,7 @@ if (sensorData -> normalize -> clamp ~= 0) {
 # standard output and input
 ```
 >>> "This will be the startard output"
-input = ?? 
-input2 = ?? "This optional message will be prompted via standard input"
+input = <<<
+input2 = <<< "This optional message will be prompted via standard input"
 ```
 ---

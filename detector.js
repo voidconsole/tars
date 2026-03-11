@@ -30,6 +30,10 @@ const syntax = {
     for: /for[^\S\r\n]*\(/,
     while: /while[^\S\r\n]*\(/,
     call: /^[A-Za-z]\w*[^\S\r\n]*\(/,
+    stdin: /<<</,
+    stdout: /^>>>/,
+    seed: /^@/,
+    temporal: /^#/
 }
 // types?: string, number (float, int complex), array, object, function, null, undefined, flux, lattice, expression
 // commands {
@@ -48,7 +52,7 @@ const syntax = {
 // }
 
 // 	comments { single line syntax :== :), multi line }
-// 	functionDef { syntax :== function $identifier ( $params ) { $body }  } ?? questionable if defined under variable assignment or as this.syntax
+// 	functionDef { syntax :== function $identifier ( $params ) { $body }  } <<< questionable if defined under variable assignment or as this.syntax
 // 	conditionals { if, else if, else } :== if/else/else if ( $condition ) { $body }
 // 	loops { for, while, do while } :== for/while/do while ( $condition ) { $body }
 // 	functionCall { syntax :== $identifier ( $args )  }

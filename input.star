@@ -5,16 +5,18 @@
 |:
 
 :) --- SECTION 1: BASIC VARIABLES & TYPES ---
+
 app_name = "TarsOS"
-version = 2.1
+version = 2i + 3j + 7k :) Quaternions 
 is_active = true
 tags = ["compiler", "fuzzy-logic", ["sub-tag", 42]]
-
 config = {
     mode: "debug";
     timeout: 500;
     buffer: 0.05;
 }
+
+
 
 :) --- SECTION 2: LATTICE STRUCTURES ---
 
@@ -54,7 +56,7 @@ square = (n) {
 clean = (val) {
     return val + 1.0
 }
-hyooo
+:) erranous
 :) Pipeline execution
 raw_input = 10
 processed = raw_input -> square -> clean
@@ -87,7 +89,7 @@ if (speed in limit) {
 :) Maybe Checks (Probabilistic Truth)
 decision = maybe ~ 0.3
 
-if (decision ?) {
+if (decision) {
     >>> "The 30% chance succeeded"
 }
 
@@ -104,9 +106,8 @@ count *= 2
 count ^= 2
 
 >>> "Please enter system code: "
-user_input = ??
+user_input = <<< "The prompt acing as standard output"
 
 final_output = "System Result: " + user_input
 >>> final_output
-
 :) End of File
