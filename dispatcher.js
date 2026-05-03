@@ -52,11 +52,11 @@ function dispatch(buffer, meta, line) {
                 break;
         }
 
-        if (meta.pureEquals) {
+        if (meta.pureColon) {
             // function declaration
 
         }
-    } else if (meta.pureEquals) {
+    } else if (meta.pureColon) {
         // simple assignment
 
         if (meta.lattice) {
@@ -65,26 +65,25 @@ function dispatch(buffer, meta, line) {
         }
         else if (meta.square) {
             console.log("Array assignment detected");
-            handler.assignment(buffer.split("=")[0].trim(), buffer.split("=")[1].trim(), "array");
-
+            handler.assignment(buffer.split(":")[0].trim(), buffer.split(":")[1].trim(), "array");
             return;
         }
         else if (meta.curly) {
             console.log("Object assignment detected");
-            handler.assignment(buffer.split("=")[0].trim(), buffer.split("=")[1].trim(), "object");
+            handler.assignment(buffer.split(":")[0].trim(), buffer.split(":")[1].trim(), "object");
 
             return;
 
         } else if (!buffer.includes("\n")) {
-            // TODO: The split does not consider the equals in strings. Hence split at only the FIRST appearance of =.
-            // let equalCount = buffer.count('=')
-            let values = buffer.split("=").map(v => v.trim());
+            // TODO: The split does not consider the colons in strings. Hence split at only the FIRST appearance of =.
+            // let colonCount = buffer.count(':')
+            let values = buffer.split(":").map(v => v.trim());
             if (values.length === 2) {
                 if (values[1].charCodeAt(0) === 60 && values[1].charCodeAt(1) === 60 && values[1].charCodeAt(2) === 60) {
                     handler.assignment(values[0], values[1], 'stdin')
                 }
                 else{
-                    return handler.assignment(buffer.split("=")[0].trim(), buffer.split("=")[1].trim(), "simple");
+                    return handler.assignment(buffer.split(":")[0].trim(), buffer.split(":")[1].trim(), "simple");
                 }
             }
         } else if (buffer.charCodeAt(0) === 64) {
@@ -92,7 +91,7 @@ function dispatch(buffer, meta, line) {
             return handler.seedCreator(buffer.slice(1).trim());
         }
 
-    } else if (meta.paren && !meta.pureEquals) {
+    } else if (meta.paren && !meta.pureColon) {
         console.log("Function call detected");
         return;
     }

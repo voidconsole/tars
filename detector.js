@@ -51,7 +51,7 @@ const syntax = {
 // 		Expression $limitor = ( ) or match operators
 // }
 
-// 	comments { single line syntax :== :), multi line }
+// 	comments { single line syntax :== =], multi line }
 // 	functionDef { syntax :== function $identifier ( $params ) { $body }  } <<< questionable if defined under variable assignment or as this.syntax
 // 	conditionals { if, else if, else } :== if/else/else if ( $condition ) { $body }
 // 	loops { for, while, do while } :== for/while/do while ( $condition ) { $body }

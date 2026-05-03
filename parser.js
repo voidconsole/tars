@@ -1,6 +1,7 @@
 import dispatch from "./dispatcher.js"
 
 function parse(input) {
+    
     // Standardize newlines and add a terminal newline for final flush
     input = input.replace(/\r\n/g, "\n").replace(/\r/g, "\n") + "\n";
 
@@ -22,50 +23,55 @@ function parse(input) {
         square: false,
         paren: false,
         lattice: false,
-        pureEquals: false,
+        pureColon: false,
         pivot: null
     };
 
     for (let i = 0; i < input.length; i++) {
         const charCode = input.charCodeAt(i);
         const char = input[i];
-        if(charCode === 10){ lineCount++}
-        if (charCode === 9) { // '\t'
+        if(charCode === 10){
+            lineCount++
+        
+        }
+        else if (charCode === 9) { // '\t'
             if (inSingleComment || inMultiComment || inString) buffer.push(char);
             continue;
         }
-        if (!inSingleComment && !inMultiComment) {
-            //TODO if newline and not in string, lattice, then dont push buffer
 
-            buffer.push(char); // only push if not in comment
-        }
-
-        // Detect Comment Starts: ":" followed by ")" or "|"
-        if (charCode === 58 && !inString) { // :
+        
+        // Detect Comment Starts: "=" followed by "]" or "|"
+        if (charCode === 61 && !inString) { // =
             const nextCode = input.charCodeAt(i + 1);
-            if (nextCode === 41 || nextCode === 124) { // ) or |
-                inSingleComment = nextCode === 41; // ":)"
-                inMultiComment = nextCode === 124; // ":|" 
-                buffer.pop(); // Remove the ":" from the command buffer
+            if (nextCode === 93 || nextCode === 124) { // ) or |
+                inSingleComment = nextCode === 93; // "=]"
+                inMultiComment = nextCode === 124; // "=|" 
+                buffer.pop(); // Remove the "=" from the command buffer
                 continue;
             }
         }
 
         if (inSingleComment && charCode === 10) { // \n Newline ends single-line comment
             inSingleComment = false;
-            // continue;
+            
         }
-        if (inMultiComment && charCode === 58 && input.charCodeAt(i - 1) === 124) { // "|:" ends multi-line
+        if (inMultiComment && charCode === 61 && input.charCodeAt(i - 1) === 124) { // "|:" ends multi-line
+            console.log("found end signal")
             inMultiComment = false;
             continue;
         }
-
+        
         if (!inSingleComment && !inMultiComment) {
+            //TODO if newline and not in string, lattice, then dont push to buffer
+            buffer.push(char); // only push if not in comment
+
+
+
             if (!inString) {
                 switch (charCode) {
-                    case 61: // '='
+                    case 58: // ':'
                         if (depthCurly === 0 && depthParen === 0 && depthSquare === 0 && !inLattice) {
-                            meta.pureEquals = true;
+                            meta.pureColon = true;
                         }
                         break;
                     case 124: // '|'
@@ -153,15 +159,15 @@ function peek(input, startIndex) {
             continue;
         }
 
-        if (code === 58) { // ':'
+        if (code === 61) { // '='
             const nextCode = input.charCodeAt(j + 1);
-            if (nextCode === 41) { // ':)' Single-line
+            if (nextCode === 93) { // '=]' Single-line
                 j = input.indexOf("\n", j + 2);
                 if (j === -1) break;
                 continue;
             }
-            if (nextCode === 124) { // ':|' Multi-line
-                const end = input.indexOf("|:", j + 2);
+            if (nextCode === 124) { // '=|' Multi-line
+                const end = input.indexOf("|=", j + 2);
                 if (end === -1) break;
                 j = end + 2;
                 continue;

@@ -8,7 +8,7 @@
 4. and a js webpage to run that python (additional)
 
 # some features basically first draft
-- comments that start with :)
+- comments that start with =]
 - model	Define a new model
 - from	Backend or source
 - input / output	Define I/O for the model

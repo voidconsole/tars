@@ -5,5 +5,7 @@ Commit elboration worth noting.
 - added syntax for temporal and flux types
 - added parial error handling, created punisher and invigilator
 - developments in handler and supported variable writing
+- changed syntax for assignment
+- worked on input handling
 ---
 

@@ -17,18 +17,19 @@ function forLoop(expression, block) {
 	console.log("For loop parameters: ", expression + " ===== " + block)
 }
 
-function assignment(name, value, type="simple") {
-	if( type === 'stdin'){
+function assignment(name, value, type = "simple") {
+	if (type === 'stdin') {
 		let text = value.slice(3).trim(); // substring after '<<<'
-        variables.set(name, {value: stdin(text), type: "stdin"});
-		console.log("Simple assignment parameters:", name + " ===== " , variables.get(name))
+		variables.set(name, { value: stdin(text), type: "stdin" });
+		console.log("Simple assignment parameters:", name + " ===== ", variables.get(name))
 		// look into this because not yet resolved.
 	}
 	else if (type === "simple") {
-		variables.set(name, {value: value, type: "simple"});
-		console.log("Simple assignment parameters:", name + " ===== " , variables.get(name))
+		variables.set(name, { value: value, type: "simple" });
+		console.log("Simple assignment parameters:", name + " ===== ", variables.get(name))
 	}
+	
 
 }
-function logVars() {console.log(variables)}
-export {stdout, stdin, forLoop, assignment, logVars};
+function logVars() { console.log(variables) }
+export { stdout, stdin, forLoop, assignment, logVars };

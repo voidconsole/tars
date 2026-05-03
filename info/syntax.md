@@ -7,7 +7,7 @@ Anagram of tars
 ## Structure / Syntax
 
 ```
-variableName = value
+variableName: value
 ```
 
 A variable may hold any datatype: string, number, float, array, object, matrix, lattice, CSV, fluxion, function reference, etc.
@@ -19,7 +19,7 @@ A variable may hold any datatype: string, number, float, array, object, matrix, 
 ## Structure / Syntax
 
 ```
-myString = "text"
+myString: "text"
 ```
 
 ## Use-Case
@@ -33,9 +33,9 @@ Storing UI labels, user input, file paths, serialized data.
 ## Structure / Syntax
 
 ```
-myNum = 34
-myFloat = 35.64
-mQuat = 1 + 2i + 3j + 4k
+myNum: 34
+myFloat: 35.64
+mQuat: 1 + 2i + 3j + 4k
 ```
 
 ## Use-Case
@@ -49,7 +49,7 @@ Counters, indices, physics values, quaternions, configuration parameters.
 ## Structure / Syntax
 
 ```
-myArray = [item1, item2, item3, [nestedItems]]
+myArray: [item1, item2, item3, [nestedItems]]
 ```
 
 ## Use-Case
@@ -63,7 +63,7 @@ Lists of values, stacks, queues, arguments, nested structures.
 ## Structure / Syntax
 
 ```
-myObj = {
+myObj: {
 	key1: value1,
 	key2: value2,
 }
@@ -80,7 +80,7 @@ Configuration structures, grouped data, dictionaries, parameter maps.
 ## Structure / Syntax
 
 ```
-hello = (param1, param2) {
+hello: (param1, param2) {
 	<- expression
 }
 ```
@@ -97,15 +97,15 @@ Encapsulation of repeated logic, transformations, math utilities.
 ## Single-Line
 
 ```
-:) a simple comment
+=] a simple comment
 ```
 
 ## Multi-Line
 
 ```
-:|
+=|
    multiple lines of documentation
-|:
+|=
 ```
 
 ## Use-Case
@@ -119,7 +119,7 @@ Annotations, explanations, temporary disabling of code sections.
 ## Matrix Structure / Syntax
 
 ```
-myMatrix = |
+myMatrix: |
   [r1c1, r1c2, r1c3],
   [r2c1, r2c2, r2c3],
   [r3c1, r3c2, r3c3]
@@ -143,7 +143,7 @@ Representing:
 ## Sheet Structure / Syntax
 
 ```
-mySheet = |
+mySheet: |
   ColumnA:[row1, row2, row3],
   ColumnB:[row1, row2, row3],
   ColumnC:[row1, row2, row3]
@@ -166,7 +166,7 @@ Useful for:
 ## CSV Structure / Syntax
 
 ```
-myCsv = |
+myCsv: |
   a1, a2, a3;
   b1, b2, b3;
   c1, c2, c3
@@ -193,21 +193,21 @@ Represents uncertain, fuzzy, or probabilistic values.
 ## Boolean
 
 ```
-flag = true
-flag2 = false
+flag: true
+flag2: false
 ```
 
 ## Flux Range (Value with Tolerance)
 
 ```
-temp = 30 ~ 5        // meaning: 30 with ±5 variation
+temp: 30 ~ 5        // meaning: 30 with ±5 variation
 ```
 
 ## Probabilistic / Maybe-Value
 
 ```
-choice = maybe
-chance = maybe ~ 0.3   // 30% weight or likelihood
+choice: maybe
+chance: maybe ~ 0.3   // 30% weight or likelihood
 ```
 
 ## Use-Case
@@ -218,7 +218,7 @@ Useful in:
 -   AI logic
 -   Approximated physics values
 -   Probabilistic decisions
--   Fuzzy comparisons
+-   fuzzy comparisons
 
 ---
 
@@ -228,19 +228,28 @@ Timers can be set, read, delayed,
 
 ```
 #timer1.start(00)
-#timer1.pause(12) :) pause for 12 seconds and then played.
+#timer1.pause(12) =] pause for 12 seconds and then played.
 
-#timer1.pause() :) pause until played.
+#timer1.pause() =] pause until played.
 #timer1.play()
 
 
-if #timer1 == 12 {
-	:) do stuff after 12 seconds
+if #timer1 = 12 {
+	=] do stuff after 12 seconds
 }
 
-freeze() :) freeze all timers
+freeze() =] freeze all timers
 
 ```
+
+# Random generators
+`<>` Returns a float between 0 and 1
+`<10%: "A", 40%: "B", 50%: "C">` Returns A,B or C based on probability distribution
+`<Gaussian>` Returns a gaussian between 0 and 1
+`<Noise: Perlin>` Returns a random noise value between 0 and 1
+Can use in combination with lerp and map to generate desired values
+
+
 # Operators
 
 These operators apply to all numeric-compatible types and, where appropriate, strings, arrays, and fluxions.
@@ -258,23 +267,18 @@ These operators apply to all numeric-compatible types and, where appropriate, st
 ## Flux Operator
 
 ```
-~   creates a fuzz-range: a ~ b meaning "a with tolerance b"
+~   creates a flux-range: a ~ b meaning "a with tolerance b"
 ```
 
-## Logical / Negation
-
-```
-!   negation or logical not
-```
 
 ## Compound Assignments
 
 ```
-+=   add and assign
--=   subtract and assign
-*=   multiply and assign
-/=   divide and assign
-^=   exponentiate and assign
++:   add and assign
+-:   subtract and assign
+*:   multiply and assign
+/:   divide and assign
+^:   exponentiate and assign
 ```
 
 ## Pipeline
@@ -339,11 +343,11 @@ Example:
 
 ```
 if (score > 90) {
-	grade = "A"
+	grade: "A"
 } else if (score > 75) {
-	grade = "B"
+	grade: "B"
 } else {
-	grade = "C"
+	grade: "C"
 }
 ```
 
@@ -354,19 +358,18 @@ if (score > 90) {
 Standard comparisons:
 
 ```
-==   equal
+=   equal
 !=   not equal
 >    greater than
 <    less than
 >=   greater or equal
 <=   less or equal
-~=   approximately equal to
-```
+~=   approximately equal to 
 
 Used inside conditions:
 
 ```
-if (a == b) { ... }
+if (a = b) { ... }
 ```
 
 ---
@@ -392,10 +395,11 @@ A and B are within tolerance.
 
 1. If A is `value ~ tol`, tolerance is `tol`.
 2. If B is `value ~ tol`, tolerance is `tol`.
-3. If both are fuzzy, tolerances add.
-4. If one side is crisp (just a number/string), tolerance comes from the fuzzy side.
-5. Tolerences behave akin to approximate values in physics. 
-6. Approx check succeeds when:
+3. If both are fuxion, tolerances add.
+4. If one side is crisp (just a number/string), tolerance comes from the fuxion side.
+5. Tolerences behave akin to approximate values in physics.
+6. If neither is fuxion, then behaves like equals, i.e tolerence: 0
+7. Approx check succeeds when:
 
 ```
 abs(A.value - B.value) <= combinedTolerance
@@ -408,11 +412,11 @@ Sensor comparisons, noisy values, physics buffers, animation smoothing.
 Example:
 
 ```
-targetTemp = 100
-reading = 98 ~ 3
+targetTemp: 100
+reading: 98 ~ 3
 
 if (reading ~= targetTemp) {
-	status = "stable"
+	status: "stable"
 }
 ```
 _Future release: Randomness is generated with specified methods, tolerences, roll etc_
@@ -430,8 +434,8 @@ if (value) { ... }
 
 Where:
 
--   `value = maybe` → 50% default probability
--   `value = maybe p` → probability weight p (0 to 1)
+-   `value: maybe` → 50% default probability
+-   `value: maybe p` → probability weight p (0 to 1)
 
 ### Behavior:
 
@@ -446,12 +450,12 @@ AI behavior, branching randomness, decision systems.
 Example:
 
 ```
-wander = maybe 0.2
+wander: maybe 0.2
 
 if (wander) {
-	action = "randomMove"
+	action: "randomMove"
 } else {
-	action = "followPath"
+	action: "followPath"
 }
 ```
 
@@ -459,7 +463,7 @@ if (wander) {
 
 # Flux Range Checking
 
-Compare a crisp value against a fuzzy range.
+Compare a crisp value against a fuxion range.
 
 ## Structure / Syntax
 
@@ -482,11 +486,11 @@ Threshold detection, margin-of-error logic.
 Example:
 
 ```
-speed = 39
-limit = 40 ~ 2
+speed: 39
+limit: 40 ~ 2
 
 if (speed in limit) {
-	alert = "safe"
+	alert: "safe"
 }
 ```
 
@@ -499,9 +503,9 @@ _Future release: Randomness is generated with specified methods, tolerences, rol
 2. ```seed()```
 Creates a seed for a flux value to reproduce events. Seed is random by default unless fixed.
 ```
-fluxy = 10 ~ 0.5 :) random seed by default 
-@sensor = "random string"  :) generates a hash for that string and uses it as seed.
-seededFluxy = 10 ~ 0.5 @sensor
+fuzzy: 10 ~ 0.5 =] random seed by default 
+@sensor: "random string"  =] generates a hash for that string and uses it as seed.
+seededFuzzy: 10 ~ 0.5 @sensor
 
 ```
 ---
@@ -512,14 +516,14 @@ All boolean logic works:
 ```
 AND   logical and
 OR   logical or
-!    negate
+NOT    inversion
 ```
 
 Example:
 
 ```
 if ((temp ~= 80) && (pressure > 30)) {
-	state = "nominal"
+	state: "nominal"
 }
 ```
 
@@ -531,13 +535,13 @@ Pipelines evaluate to a value, so they’re allowed:
 
 ```
 if (sensorData -> normalize -> clamp ~= 0) {
-	safe = true
+	safe: true
 }
 ```
 # standard output and input
 ```
 >>> "This will be the startard output"
-input = <<<
-input2 = <<< "This optional message will be prompted via standard input"
+input: <<< 
+input2: <<< "This optional message will be prompted via standard input"
 ```
 ---
