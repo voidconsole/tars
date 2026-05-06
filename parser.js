@@ -5,20 +5,20 @@ function parse(input) {
     // Standardize newlines and add a terminal newline for final flush
     input = input.replace(/\r\n/g, "\n").replace(/\r/g, "\n") + "\n";
 
-    var buffer = [];
-    var commandNum = 0;
-    var inLattice = false;
-    var depthCurly = 0;
-    var depthSquare = 0;
-    var depthParen = 0;
-    var inString = false;
-    var stringChar = null;
-    var inSingleComment = false;
-    var inMultiComment = false;
-    var skipFlush = false;
-    var lineCount = 1;
+    let buffer = [];
+    let commandNum = 0;
+    let inLattice = false;
+    let depthCurly = 0;
+    let depthSquare = 0;
+    let depthParen = 0;
+    let inString = false;
+    let stringChar = null;
+    let inSingleComment = false;
+    let inMultiComment = false;
+    let skipFlush = false;
+    let lineCount = 1;
 
-    var meta = {
+    let meta = {
         curly: false,
         square: false,
         paren: false,
@@ -110,10 +110,9 @@ function parse(input) {
                             if (skipFlush) meta.pivot = buffer.length
                         }
                         break;
-                    case 63: // '?'
-                    break;
-                    case 232313212: //   i have 
-                }
+
+                        
+                }            
             }
             // 39 = ', 34 = ", 96 = `
             if ((charCode === 39 || charCode === 34 || charCode === 96) && !inString) {
@@ -141,6 +140,17 @@ function parse(input) {
                     console.log("-------------------------------------------------------------------------------\n");
                 } else if (!skipFlush) {
                     buffer = []; // Clear whitespace-only buffers
+                }
+                
+                }
+            // Flush if end of input and buffer has content
+            if(charCode === 10 && i === input.length - 1 && buffer.length > 0){
+                buffer.pop(); // remove trailing newline
+                let bufferStr = buffer.join("").trim();
+                if (bufferStr.length > 0) {
+                    commandNum++;
+                    console.log(`${commandNum} ⚜️  ${bufferStr} ⚜️`);
+                    dispatch(bufferStr, meta, lineCount);
                 }
             }
         }
