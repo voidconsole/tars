@@ -1,300 +1,365 @@
-# Filename
+# TARS
+
+A stochastic-temporal programming language where **uncertainty, values, and time
+coexist as first-class constructs**. TARS is designed for:
+
+- simulations
+- AI systems
+- physics modeling
+- generative systems
+- structured computation under uncertainty
+
+---
+
+<!-- TODO: Verbosify the documentation -->
+
+# Core Philosophy
+
+TARS operates on three layers:
+
+1. **Deterministic Values** — exact, known values
+2. **Fluxions** — values with uncertainty (distributions)
+3. **Collapse (`<...>`)** — sampling uncertainty into reality
+
+> You don’t “generate randomness”. You **resolve uncertainty**.
+
+---
+
+# File
+
+```
 script.star
-Anagram of tars
+```
+
+---
 
 # Variables
 
-## Structure / Syntax
+## Syntax
 
 ```
-variableName: value
+name: value
 ```
 
-A variable may hold any datatype: string, number, float, array, object, matrix, lattice, CSV, fluxion, function reference, etc.
+- `:` is **assignment**
+- Variables can store any type
 
 ---
 
-# Strings
+# Data Types
 
-## Structure / Syntax
+## Strings
 
 ```
-myString: "text"
+label: "hello"
 ```
-
-## Use-Case
-
-Storing UI labels, user input, file paths, serialized data.
 
 ---
 
-# Numbers
-
-## Structure / Syntax
+## Numbers
 
 ```
-myNum: 34
-myFloat: 35.64
-mQuat: 1 + 2i + 3j + 4k
+a: 10
+b: 3.14
+q: 1 + 2i + 3j + 4k
 ```
-
-## Use-Case
-
-Counters, indices, physics values, quaternions, configuration parameters.
 
 ---
 
-# Arrays
-
-## Structure / Syntax
+## Arrays
 
 ```
-myArray: [item1, item2, item3, [nestedItems]]
+arr: [1, 2, 3, [4,5]]
 ```
-
-## Use-Case
-
-Lists of values, stacks, queues, arguments, nested structures.
 
 ---
 
-# Objects
-
-## Structure / Syntax
+## Objects
 
 ```
-myObj: {
-	key1: value1,
-	key2: value2,
+obj: {
+  x: 10,
+  y: 20
 }
 ```
 
-## Use-Case
-
-Configuration structures, grouped data, dictionaries, parameter maps.
-
 ---
 
-# Functions
-
-## Structure / Syntax
+## Functions
 
 ```
-hello: (param1, param2) {
-	<- expression
+add: (a, b) {
+  <- a + b
 }
 ```
-- Functions are declared by assigning them to a variable name by which they will be invoked ```hello(param1, param2)```
-- The last line of the function is automatically returned if its a valid expression, or may use <- to explicitly return it.
-## Use-Case
 
-Encapsulation of repeated logic, transformations, math utilities.
+- Last expression auto-returns
+- `<-` forces return
 
 ---
 
 # Comments
 
-## Single-Line
-
 ```
-=] a simple comment
-```
+=] single line
 
-## Multi-Line
-
-```
 =|
-   multiple lines of documentation
+multi line
 |=
 ```
 
-## Use-Case
+---
 
-Annotations, explanations, temporary disabling of code sections.
+# Fluxion System (Uncertainty Core)
+
+A **Fluxion** represents a value as a **distribution**, not a fixed number. The
+tolerences of a distribution are operated arithimatically similar to physical
+uncertainity.
 
 ---
 
-# Lattice
-
-## Matrix Structure / Syntax
+## Range (Uniform Distribution)
 
 ```
-myMatrix: |
-  [r1c1, r1c2, r1c3],
-  [r2c1, r2c2, r2c3],
-  [r3c1, r3c2, r3c3]
-|
+temp: 30 ~ 5
 ```
 
-A rectangular 2D grid. All rows must have equal length.
+Meaning:
 
-## Use-Case
-
-Representing:
-
--   Physics simulation grids
--   Transformation matrices
--   Map tiles
--   Adjacency matrices
+> Uniform distribution from 25 to 35
 
 ---
 
-
-## Sheet Structure / Syntax
+## Boolean Fluxion
 
 ```
-mySheet: |
-  ColumnA:[row1, row2, row3],
-  ColumnB:[row1, row2, row3],
-  ColumnC:[row1, row2, row3]
-|
+flag: maybe
 ```
 
-Column-oriented tabular data. Every column must have the same number of rows.
+Meaning:
 
-## Use-Case
-
-Useful for:
-
--   Small in-memory tables
--   Datasets with named fields
--   Structured data import/export
--   Computations where columns matter more than rows
+> 50% true, 50% false
 
 ---
 
-## CSV Structure / Syntax
+# Collapse Operator `<...>`
+
+## Definition
 
 ```
-myCsv: |
-  a1, a2, a3;
-  b1, b2, b3;
-  c1, c2, c3
-|
+<expr>
 ```
 
-Row-oriented simple table.
-`;` separates rows, `,` separates cells.
-
-## Use-Case
-
-Ideal for:
-
--   Logs
--   Exporting/importing to external tools
--   List-like data meant to be saved or transmitted
+> Samples a value from a distribution **immediately at evaluation time**
 
 ---
 
-# Fluxion Type
-
-Represents uncertain, fuzzy, or probabilistic values.
-
-## Boolean
+## Examples
 
 ```
-flag: true
-flag2: false
+<>              // Uniform(0,1)
+<Gaussian>      // Gaussian(0,1)
+<x>             // sample fluxion x
 ```
-
-## Flux Range (Value with Tolerance)
-
-```
-temp: 30 ~ 5        // meaning: 30 with ±5 variation
-```
-
-## Probabilistic / Maybe-Value
-
-```
-choice: maybe
-chance: maybe ~ 0.3   // 30% weight or likelihood
-```
-
-## Use-Case
-
-Useful in:
-
--   Noisy sensor readings
--   AI logic
--   Approximated physics values
--   Probabilistic decisions
--   fuzzy comparisons
 
 ---
 
-# Time
-Time is a fundamental property in Tars.
-Timers can be set, read, delayed, 
+## Important Rules
+
+### 1. Immediate Evaluation
 
 ```
-#timer1.start(00)
-#timer1.pause(12) =] pause for 12 seconds and then played.
-
-#timer1.pause() =] pause until played.
-#timer1.play()
-
-
-if #timer1 = 12 {
-	=] do stuff after 12 seconds
-}
-
-freeze() =] freeze all timers
-
+x: <>
+y: x
 ```
 
-# Random generators
-`<>` Returns a float between 0 and 1
-`<10%: "A", 40%: "B", 50%: "C">` Returns A,B or C based on probability distribution
-`<Gaussian>` Returns a gaussian between 0 and 1
-`<Noise: Perlin>` Returns a random noise value between 0 and 1
-Can use in combination with lerp and map to generate desired values
+- `x` is already a resolved value
 
+---
+
+### 2. Independent Sampling
+
+```
+x: 30 ~ 5
+
+a: <x>
+b: <x>
+```
+
+- `a` and `b` are **different samples**
+
+---
+
+### 3. Single Meaning
+
+> `<...>` ALWAYS means: **sample from distribution**
+
+### Weighted Distribution
+
+```
+choice: <0.1:"A", 0.4:"B", 0.5:"C">
+```
+
+Rules:
+
+- weights can be any numbers
+- automatically normalized
+
+---
 
 # Operators
-
-These operators apply to all numeric-compatible types and, where appropriate, strings, arrays, and fluxions.
 
 ## Arithmetic
 
 ```
-+   addition
--   subtraction
-*   multiplication
-/   division
-^   power
++  -  *  /  ^
 ```
 
-## Flux Operator
+## Assignment
 
 ```
-~   creates a flux-range: a ~ b meaning "a with tolerance b"
+:    assign
++:   add assign
+-:   subtract assign
+*:   multiply assign
+/:   divide assign
+^:   power assign
 ```
 
-
-## Compound Assignments
-
-```
-+:   add and assign
--:   subtract and assign
-*:   multiply and assign
-/:   divide and assign
-^:   exponentiate and assign
-```
-
-## Pipeline
+## Comparison
 
 ```
-value -> func -> nextFunc
+=   equal
+!=  not equal
+>   greater
+<   less
+>=  greater equal
+<=  less equal
+~=  approximate
 ```
 
-This passes the result of each expression into the next function, left to right.
-Functional-style chaining.
-Useful for:
+---
 
--   Data transformations
--   Stream processing
--   Signal pipelines
--   Computational pipelines
+# Approximate Equality
+
+```
+if (A ~= B)
+```
+
+Rules:
+
+- works with fluxions
+- uses tolerance
+
+```
+abs(A - B) <= tolerance
+```
+
+---
+
+# Conditionals
+
+## Syntax
+
+```
+if condition {
+  ...
+}
+```
+
+---
+
+## Auto Collapse Rule
+
+> Fluxions are **automatically sampled once per reference** inside conditionals
+
+---
+
+### Example
+
+```
+x: 30 ~ 5
+
+if (x ~= 30) {
+  >>> "near 30"
+}
+```
+
+Equivalent to:
+
+```
+if (<x> ~= 30)
+```
+
+---
+
+### Important
+
+```
+if (x + x > 50)
+```
+
+means:
+
+```
+<x> + <x>
+```
+
+NOT:
+
+```
+2 * <x>
+```
+
+---
+
+# Loops
+
+## Range Loop
+
+```
+for i in 0..10 {
+  >>> i
+}
+```
+
+---
+
+## Array Loop
+
+```
+for item in arr {
+  >>> item
+}
+```
+
+---
+
+# Try / Catch
+
+```
+try {
+  risky()
+} catch err {
+  >>> err
+}
+```
+
+Optional:
+
+```
+finally {
+  cleanup()
+}
+```
+
+---
+
+# Pipeline
+
+```
+value -> func -> next
+```
 
 Example:
 
@@ -304,244 +369,320 @@ data -> clean -> normalize -> export
 
 ---
 
-# Conditionals
+# Lattice System (Matrix + Sheet Unified)
 
-Conditionals evaluate expressions and execute blocks based on truth values, comparisons, or flux (fuzzy) checks.
+## Matrix Mode
+
+```
+// No header → matrix mode
+grid: |
+  1, 2, 3
+  4, 5, 6
+  7, 8, 9
+|
+```
+
+- numeric grid
+- matrix operations enabled
 
 ---
 
-# If / Else
-
-## Structure / Syntax
+## Sheet Mode
 
 ```
-if (condition) {
-	...block...
-} else if (condition) {
-	...block...
-} else {
-	...block...
+// Header → named columns
+data: |
+  Name, Age, Score
+  alice, 28, 0.91
+  bob, 34, 0.87
+|
+```
+
+- column access enabled
+
+```
+data.Name
+```
+
+---
+
+---
+
+# Time System
+
+```
+#timer.start()
+#timer.pause(5)
+#timer.play()
+
+if #timer = 10 {
+  >>> "done"
 }
 ```
 
--   Parentheses contain any valid expression that returns a boolean or flux-evaluated boolean.
--   Blocks must explicitly return or mutate something depending on context.
-- **OPTIONAL Parenthesis**, thus 
 ```
-if condition {
-	...block...
-}
-```
-is also valid.
-- If parentheses are omitted, statements must include `{` at the end of line.
-
-## Use-Case
-
-Regular branching logic.
-
-Example:
-
-```
-if (score > 90) {
-	grade: "A"
-} else if (score > 75) {
-	grade: "B"
-} else {
-	grade: "C"
-}
+freeze()
 ```
 
 ---
 
-# Comparison Operators
-
-Standard comparisons:
+# Standard IO
 
 ```
-=   equal
-!=   not equal
->    greater than
-<    less than
->=   greater or equal
-<=   less or equal
-~=   approximately equal to 
+>>> "output"
 
-Used inside conditions:
-
-```
-if (a = b) { ... }
+input: <<<
+input2: <<< "prompt"
 ```
 
 ---
 
-# Flux Checking
+# Execution Model
 
-Flux values allow fuzzy comparisons.
+1. Values exist
+2. Fluxions represent uncertainty
+3. `<...>` resolves uncertainty
+4. Conditionals auto-collapse
 
 ---
 
-# Approximate Equality
-
-## Structure / Syntax
+# Example (Putting It All Together)
 
 ```
-if (A ~= B) { ... }
-```
+temp: 30 ~ 5
+noise: <>
+flag: maybe
 
-`A ~= B` means:
-A and B are within tolerance.
+value: <temp> + noise
 
-### Rules:
-
-1. If A is `value ~ tol`, tolerance is `tol`.
-2. If B is `value ~ tol`, tolerance is `tol`.
-3. If both are fuxion, tolerances add.
-4. If one side is crisp (just a number/string), tolerance comes from the fuxion side.
-5. Tolerences behave akin to approximate values in physics.
-6. If neither is fuxion, then behaves like equals, i.e tolerence: 0
-7. Approx check succeeds when:
-
-```
-abs(A.value - B.value) <= combinedTolerance
-```
-
-## Use-Case
-
-Sensor comparisons, noisy values, physics buffers, animation smoothing.
-
-Example:
-
-```
-targetTemp: 100
-reading: 98 ~ 3
-
-if (reading ~= targetTemp) {
-	status: "stable"
-}
-```
-_Future release: Randomness is generated with specified methods, tolerences, roll etc_
----
-
-# Maybe Checks (Probabilistic Truth)
-
-`maybe` represents unknown or probabilistic truth.
-
-## Structure / Syntax
-
-```
-if (value) { ... }
-```
-
-Where:
-
--   `value: maybe` → 50% default probability
--   `value: maybe p` → probability weight p (0 to 1)
-
-### Behavior:
-
-```
-value     returns true with probability p
-```
-
-## Use-Case
-
-AI behavior, branching randomness, decision systems.
-
-Example:
-
-```
-wander: maybe 0.2
-
-if (wander) {
-	action: "randomMove"
-} else {
-	action: "followPath"
+if (flag AND temp ~= 30) {
+  >>> value
 }
 ```
 
 ---
 
-# Flux Range Checking
+# Design Principles
 
-Compare a crisp value against a fuxion range.
+- One meaning per symbol
+- Uncertainty is first-class
+- Sampling is explicit (except conditionals)
+- No hidden behavior
 
-## Structure / Syntax
+---
+
+# What TARS Enables
+
+- physics simulations with uncertainty
+- AI decision systems
+- procedural generation
+- probabilistic modeling
+- data pipelines with noise
+
+---
+
+# General Purpose Capabilities
+
+TARS is not limited to stochastic systems — it is a **fully general-purpose
+language**.
+
+## 1. Control Flow
 
 ```
-if (X in Y) { ... }
+if condition { }
+for i in 0..10 { }
+try { } catch err { }
 ```
 
-Where Y is a flux range `value ~ tol`.
+Supports:
 
-### Meaning:
+- branching
+- iteration
+- error handling
 
-```
-abs(X - Y.value) <= Y.tolerance
-```
+---
 
-## Use-Case
-
-Threshold detection, margin-of-error logic.
-
-Example:
+## 2. Functions as First-Class Values
 
 ```
-speed: 39
-limit: 40 ~ 2
+square: (x) { <- x * x }
 
-if (speed in limit) {
-	alert: "safe"
+apply: (f, v) {
+  <- f(v)
 }
+
+apply(square, 5)
 ```
+
+- functions can be passed, stored, returned
 
 ---
-# Probabilistic keywords:
-1. ``` why(fluxVal) ```
-Returns value of a fluxVal at runtime. 
-_Future release: Randomness is generated with specified methods, tolerences, roll etc_
 
-2. ```seed()```
-Creates a seed for a flux value to reproduce events. Seed is random by default unless fixed.
-```
-fuzzy: 10 ~ 0.5 =] random seed by default 
-@sensor: "random string"  =] generates a hash for that string and uses it as seed.
-seededFuzzy: 10 ~ 0.5 @sensor
+## 3. Data Structures
+
+- arrays
+- objects
+- lattices (matrix + table hybrid)
 
 ```
----
-# Combined Conditionals
-
-All boolean logic works:
-
-```
-AND   logical and
-OR   logical or
-NOT    inversion
-```
-
-Example:
-
-```
-if ((temp ~= 80) && (pressure > 30)) {
-	state: "nominal"
-}
+users: [
+  {name:"a"},
+  {name:"b"}
+]
 ```
 
 ---
 
-# Pipeline Inside Condition
-
-Pipelines evaluate to a value, so they’re allowed:
+## 4. Functional Pipelines
 
 ```
-if (sensorData -> normalize -> clamp ~= 0) {
-	safe: true
-}
+data -> clean -> transform -> output
 ```
-# standard output and input
-```
->>> "This will be the startard output"
-input: <<< 
-input2: <<< "This optional message will be prompted via standard input"
-```
+
+- enables composable transformations
+
 ---
+
+## 5. Mathematical Computing
+
+- vectors, matrices
+- quaternions
+- lattice operations
+
+```
+weights @ weights.T
+```
+
+---
+
+## 6. Input / Output
+
+```
+>>> "hello"
+input: <<<
+```
+
+---
+
+## 7. Modules (Import / Export)
+
+TARS supports modular code organization.
+
+### Export
+
+```
+add: (a, b) { <- a + b }
+
+export { add }
+```
+
+### Import
+
+```
+import "math.star" { add }
+
+result: add(2, 3)
+```
+
+### Namespace Import (optional)
+
+```
+import "math.star" as math
+
+math.add(2, 3)
+```
+
+---
+
+## 8. File I/O
+
+Basic file operations are built-in.
+
+### Read File
+
+```
+content: read("data.txt")
+```
+
+### Write File
+
+```
+write("out.txt", content)
+```
+
+### Append
+
+```
+append("log.txt", "new entry")
+```
+
+---
+
+## 9. Extensibility
+
+TARS can integrate with:
+
+- JavaScript runtime
+- external libraries
+- system APIs
+
+---
+
+## 10. Deterministic + Stochastic Hybrid
+
+TARS uniquely allows:
+
+```
+deterministic + uncertain → combined systems
+```
+
+```
+signal: 10
+noise: <>
+
+result: signal + noise
+```
+
+---
+
+# Tensor Support (Nested Lattices)
+
+Tensors are supported as **nested lattice structures**.
+
+## Example
+
+Rules:
+
+- each nested layer represents a higher dimension
+- consistent shape is required
+
+---
+
+## Behavior
+
+- 2D lattice → matrix
+- 3D+ lattice → tensor
+
+Operations:
+
+- element-wise arithmetic
+- broadcasting (future extension)
+- slicing (future extension)
+
+---
+
+## Design Note
+
+Tensors are **not a separate type**.
+
+> They are an extension of the lattice system into higher dimensions.
+
+---
+
+# Final Definition
+
+TARS is:
+
+> A general-purpose programming language where computation happens not just on
+> values, but on **distributions, time, and evolving systems**, unified through
+> a single collapse-based execution model.

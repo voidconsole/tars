@@ -3,27 +3,19 @@
    Version: 1.0
    Coverage: All datatypes, Lattices, Fluxions, and Control Flow
 |=
-
 =] --- SECTION 1: BASIC VARIABLES & TYPES ---
-
 app_name: "TarsOS"
 version: 2i + 3j + 7k =] Quaternions 
-is_active: true
-
-
-
-
+sensor_readings: 34 ~ 5
+is_active: maybe
 tags: ["compiler", "fuzzy-logic", ["sub-tag", 42]]
 config: {
     mode: "debug";
     timeout: 500;
     buffer: 0.05;
 }
-
-
-
+weather = <30: "Sunny", 50: "Cloudy", 20: "Rainy">
 =] --- SECTION 2: LATTICE STRUCTURES ---
-
 =] Matrix: 2D Grid
 spatial_grid: |
     [1.0, 0.0, 0.0],
@@ -91,7 +83,7 @@ if (speed in limit) {
 }
 
 =] Maybe Checks (Probabilistic Truth)
-decision: maybe ~ 0.3
+decision: <30: true, 70: false>
 
 if (decision) {
     >>> "The 30% chance succeeded"
@@ -100,7 +92,7 @@ if (decision) {
 =] Pipeline inside a conditional
 if (10 -> square ~= 100) {
     >>> "Math check passed"
-}
+
 
 =] --- SECTION 6: OPERATORS & I/O ---
 
@@ -115,4 +107,3 @@ user_input: <<< "The prompt acing as standard output"
 final_output: "System Result: " + user_input
 >>> final_output
 =] End of File
-|=

@@ -1,23 +1,95 @@
-class reporter{
-    constructor(message, type){
-        this.message = message
-        this.type = type
-    }
-    message = this.message
-    type = this.type
-    punish(message, type){
-        let hello  = 'hellloo'
-    }
+const C = {
+	reset: "\x1b[0m",
+	bold: "\x1b[1m",
+	italic: "\x1b[3m",
+	underline: "\x1b[4m",
 
+	black: "\x1b[30m",
+	red: "\x1b[31m",
+	green: "\x1b[32m",
+	yellow: "\x1b[33m",
+	blue: "\x1b[34m",
+	magenta: "\x1b[35m",
+	cyan: "\x1b[36m",
+	white: "\x1b[37m",
+
+	gray: "\x1b[90m",
+};
+
+class tarsError extends Error {
+
+	constructor(type, message, line, source, keyword) {
+		super(message);
+		this.type = type;
+		this.line = line;
+		this.source = source;
+		this.keyword = keyword;
+	}
+
+	color() {
+		return C.red + C.bold ;
+	}
+	format() {
+
+		return `
+
+${C.bold + this.color()}${this.type}${C.reset} at line ${C.yellow + this.line + C.reset}
+${C.bold + C.blue + '='.repeat(this.source.length + 20)}
+    ${C.white + this.line + C.blue} | ${C.reset + C.white + this.source}
+${C.bold + C.blue + '='.repeat(this.source.length + 20) +C.reset}
+
+${	this.message}
+${'_'.repeat(40)}
+`;
+	}
+	throw() {
+		throw this.format();
+	}
 }
 
-// basically create custom errors with chalk or 
-const boldRed = '\x1b[1m\x1b[31m';
-const italicBlue = '\x1b[3m\x1b[34m';
-             throw (`\x1b[1m\x1b[34m
-===========================================\x1b[34m
-    ${line} | ${buffer}
-\x1b[1m\x1b[34m===========================================\x1b[0m
-\x1b[1m\x1b[31mReference error\x1b[0m at line ${line} :(
-\x1b[1m\x1b[34m${buffer}\x1b[0m is not defined.
-`);
+class tarsReferenceError extends tarsError {
+
+	constructor(message, line, source) {
+		super("Reference Error", message, line, source);
+	}
+}
+
+class tarsSyntaxError extends tarsError {
+
+	constructor(message, line, source) {
+		super("Syntax Error", message, line, source);
+	}
+
+	color() {
+		return C.yellow;
+	}
+}
+
+
+
+class tarsTypeError extends tarsError {
+
+	constructor(message, line, source) {
+		super("Type Error", message, line, source);
+	}
+}
+
+
+
+class tarsRuntimeError extends tarsError {
+
+	constructor(message, line, source) {
+		super("Runtime Error", message, line, source);
+	}
+}
+
+
+function punish() {
+	new tarsReferenceError(
+		`"warpSpeed" is not defined.`,
+		14,
+		"velocity + warpSpeed"
+	).throw();
+}
+
+export default punish;
