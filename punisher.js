@@ -84,12 +84,25 @@ class tarsRuntimeError extends tarsError {
 }
 
 
-function punish() {
-	new tarsReferenceError(
-		`"warpSpeed" is not defined.`,
-		14,
-		"velocity + warpSpeed"
-	).throw();
+function punish(message, type, line, source) {
+	let error;
+	switch (type) {
+		case "Reference":
+			error = new tarsReferenceError(message, line, source);
+			break;
+		case "Syntax":
+			error = new tarsSyntaxError(message, line, source);
+			break;
+		case "Type":
+			error = new tarsTypeError(message, line, source);
+			break;
+		case "Runtime":
+			error = new tarsRuntimeError(message, line, source);
+			break;
+		default:
+			error = new tarsError("Unknown Error", message, line, source);
+	}
+	error.throw();
 }
 
 export default punish;

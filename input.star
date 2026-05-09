@@ -9,11 +9,11 @@ version: 2i + 3j + 7k =] Quaternions
 sensor_readings: 34 ~ 5
 is_active: maybe
 tags: ["compiler", "fuzzy-logic", ["sub-tag", 42]]
-config: {
-    mode: "debug";
-    timeout: 500;
-    buffer: 0.05;
-}
+=] config: {
+=]     mode: "debug";
+=]     timeout: 500;
+=]     buffer: 0.05;
+=] }
 weather = <30: "Sunny", 50: "Cloudy", 20: "Rainy">
 =] --- SECTION 2: LATTICE STRUCTURES ---
 =] Matrix: 2D Grid
@@ -61,6 +61,7 @@ processed: raw_input -> square -> clean
 
 =] Standard Comparison
 if (version >= 2.0) {
+	=] this is a test comment that should be ignored
     >>> "Software version is up to date."
 } else {
     >>> "Update required."
@@ -92,7 +93,7 @@ if (decision) {
 =] Pipeline inside a conditional
 if (10 -> square ~= 100) {
     >>> "Math check passed"
-
+}
 
 =] --- SECTION 6: OPERATORS & I/O ---
 

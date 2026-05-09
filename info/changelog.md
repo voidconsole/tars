@@ -7,4 +7,8 @@ Commit elboration worth noting.
 - developments in handler and supported variable writing
 - changed syntax for assignment
 - worked on input handling
+- added support for string escapements
+- cleaned parser code
+- explored a few optimization tricks
+- checked for well-bracketed-ness by default
 ---
