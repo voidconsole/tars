@@ -3,7 +3,6 @@ const C = {
 	bold: "\x1b[1m",
 	italic: "\x1b[3m",
 	underline: "\x1b[4m",
-
 	black: "\x1b[30m",
 	red: "\x1b[31m",
 	green: "\x1b[32m",
@@ -12,7 +11,6 @@ const C = {
 	magenta: "\x1b[35m",
 	cyan: "\x1b[36m",
 	white: "\x1b[37m",
-
 	gray: "\x1b[90m",
 };
 
@@ -25,7 +23,6 @@ class tarsError extends Error {
 		this.source = source;
 		this.keyword = keyword;
 	}
-
 	color() {
 		return C.red + C.bold ;
 	}
@@ -46,7 +43,6 @@ ${'_'.repeat(40)}
 		throw this.format();
 	}
 }
-
 class tarsReferenceError extends tarsError {
 
 	constructor(message, line, source) {
@@ -64,8 +60,6 @@ class tarsSyntaxError extends tarsError {
 		return C.yellow;
 	}
 }
-
-
 
 class tarsTypeError extends tarsError {
 
@@ -104,5 +98,4 @@ function punish(message, type, line, source) {
 	}
 	error.throw();
 }
-
 export default punish;

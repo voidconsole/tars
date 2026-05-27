@@ -38,7 +38,6 @@ function parse(input) {
 					inSingleComment = false;
 				}
 				//----------------------------------------------------------------------------------
-				
 				if ( // Flush if end of input and buffer has content
 					i === inputLength - 1 &&
 					buffer.length > 0
