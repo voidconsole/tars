@@ -1,4 +1,3 @@
-// benchmark.js
 // import { performance } from "perf_hooks"; // in Node; in Deno use globalThis.performance
 
 function bench(func, s, iterations = 1000) {
@@ -17,5 +16,5 @@ function bench(func, s, iterations = 1000) {
         return (t1 - t0) / iterations;
 }
 
-// set up `s` as a realistic large input then call bench for regex and extractParenContents
+// set up `s` as a realistic large input, perferably read from a file
 export default bench;
