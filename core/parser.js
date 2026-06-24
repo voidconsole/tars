@@ -82,7 +82,7 @@ function parse(input) {
 		else {
 			//TODO if newline and not in string, lattice, then dont push to buffer
 			buffer.push(char); // only push if not in comment
-			//============================================================================================
+			// ============================================================================================
 			if (!inString) {
 				// Code for characters NOT inside strings
 				switch (charCode) {
