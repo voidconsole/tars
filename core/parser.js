@@ -38,23 +38,48 @@ function parse(input) {
 					inSingleComment = false;
 				}
 				//----------------------------------------------------------------------------------
-				if ( // Flush if end of input and buffer has content
+				 // Punish if end of input and buffer has content and unclosed brackets.
+				if (
 					i === inputLength - 1 &&
-					buffer.length > 0
+					buffer.length > 0 &&
+					(depthCurly > 0 || depthSquare > 0 || depthParen > 0 || inLattice || inString)
 				) {
-					buffer.pop(); // remove trailing newline
-					const bufferStr = buffer.join("")
-						.trim();
+					const bufferStr = (buffer.join("")).trim();
+					const newlineIndex = bufferStr.indexOf("\n");
+					const errorSnippet = newlineIndex === -1 ? bufferStr : bufferStr.slice(0, newlineIndex);
+
+					// Determine the exact explicit error message
+					let message = "Unmatched syntax detected.";
+
+					if (inString) {
+						const quoteChar = String.fromCharCode(stringChar);
+						message = `Unclosed string literal. Expected a matching closing quote (${quoteChar}).`;
+					} else if (bracketStack.length > 0) {
+						const topOfStack = bracketStack[bracketStack.length - 1];
+						switch (topOfStack) {
+							case 123: // '{'
+								message = "Unmatched opening curly brace '{' detected.";
+								break;
+							case 91:  // '['
+								message = "Unmatched opening square bracket '[' detected.";
+								break;
+							case 40:  // '('
+								message = "Unmatched opening parenthesis '(' detected.";
+								break;
+							case 124: // '|'
+								message = "Unmatched lattice delimiter '|' detected.";
+								break;
+						}
+					}
+
 					punish(
-						`Unmatched brackets detected`,
+						message,
 						"Syntax",
 						lastFlushedLine + 1,
-						bufferStr.slice(
-							0,
-							bufferStr.indexOf("\n"),
-						),
+						errorSnippet,
 					);
-				} break;
+				}
+				break;
 			case 9: // '\t'
 				// if wish to, then also push for comments.
 				if (inString) buffer.push(char);
@@ -66,12 +91,13 @@ function parse(input) {
 					if (nextCode === 93 || nextCode === 124) { // ] or |
 						inSingleComment = nextCode === 93; // "=]"
 						inMultiComment = nextCode === 124; // "=|"
+						i++ // skip the following ] or |
 						continue;
 					}
 				}
 				if (
 					inMultiComment &&
-					input.charCodeAt(i - 1) === 124
+					input.charCodeAt(i - 1) === 124	
 				) { // "|=" ends multi-line
 					inMultiComment = false;
 					continue;
@@ -217,6 +243,7 @@ function parse(input) {
 								meta.pureColon = false;
 								meta.pivot = null;
 								lastFlushedLine = lineCount;
+
 								console.log(
 									"-----------------------------------------------------\n",
 								);
