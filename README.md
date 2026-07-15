@@ -1,5 +1,16 @@
 <img width="1282" height="519" alt="A4 - 76tars" src="https://github.com/user-attachments/assets/10abac89-12c3-4d37-8555-619019794d4c" />
 
+<br><br>
+
+<p align="center">
+  <i>
+tars stands for temporal, analytical, and stochastic.
+<br>
+The r reminds us that reality doesn't fit neatly into four letters.
+  </i>
+</p>
+
+<br><br>
 ---
 A language built for a world that no longer fits inside traditional programming.
 
@@ -29,6 +40,7 @@ They are becoming the default.
 
 Built in JavaScript, targeting a Python AI runtime, ***tars*** aims to make everything from scientific computing to machine learning feel like part of the language itself.
 
+<br><br>
 ---
 
 # Why ***tars*** Exists
@@ -55,70 +67,38 @@ A neural network, a differential equation, a simulation, and a website are all s
 
 ***tars*** is designed to describe systems.
 
+<br><br>
 ---
 
-# Core Model
 
-Every computation in ***tars*** exists in one of three forms.
+# Architecture
+<img width="1290" height="907" alt="image" src="https://github.com/user-attachments/assets/3c6f6180-7413-452f-8b79-1c932f602bd6" />
+<br><br>
+The component names are descriptive; their names reflect their literal meanings.
 
-## Deterministic Values
-
-Known quantities.
-
-```***tars***
-mass: 10
-velocity: 5
-
-momentum: mass * velocity
-```
-
-These values behave exactly as expected.
-
+<br><br>
 ---
 
-## Fluxions
+# Computational Model
 
-A Fluxion represents uncertainty directly.
+tars is built around the idea that modern computation extends beyond deterministic values.
 
-```***tars***
-temperature: 30 ~ 5
-```
+Rather than treating time, mathematics, and uncertainty as libraries layered on top of the language, tars makes them first-class computational dimensions.
 
-This represents a value centered around 30 with a tolerance of 5.
+Every computation in tars exists across three complementary dimensions.
 
-The uncertainty is preserved and propagated throughout computation.
+- **Temporal:** 
+> Computation can evolve through time rather than existing only in the present. Values may represent the past, present, or future, evolve continuously, and be observed through collapse when a concrete state is required. Multiple timelines having different speeds can evolve independently. Time is part of the computation itself, not merely something measured around it.
 
-```***tars***
-mass: 100 ~ 2
-velocity: 50 ~ 1
+- **Analytical:**  
+> Mathematical reasoning is a native capability of the language. Structures such as lattices, vectors, tensors, equations, and computational models are treated as fundamental building blocks, enabling scientific computing, optimization, and simulation without relying on separate numerical ecosystems.
 
-momentum: mass * velocity
-```
+- **Stochastic:**  
+> Uncertainty is represented directly rather than approximated through external libraries. Fluxions preserve distributions throughout computation, Seeds provide reproducible randomness, and collapse transforms possibility into observation only when a concrete value is required.
 
-Because the inputs contain uncertainty, the result does too.
+These dimensions are independent, yet compose naturally within the same program, allowing deterministic algorithms, mathematical models, temporal systems, and probabilistic computation to coexist under the same computational model.
 
-Fluxions allow uncertainty to remain part of the computation rather than being discarded at the start.
-
----
-
-## Collapse
-
-Eventually uncertainty must become an observation.
-
-```***tars***
-temperature: 30 ~ 5
-
-sample: <temperature>
-```
-
-The collapse operator resolves a Fluxion into a concrete value.
-
-This is one of the central ideas behind ***tars***.
-
-Uncertainty exists.
-
-Collapse turns possibility into observation.
-
+<br><br>
 ---
 
 # Language Overview
@@ -134,6 +114,7 @@ age: 18
 
 This keeps assignment distinct from equality.
 
+<br><br>
 ---
 
 ## Data Types
@@ -172,6 +153,7 @@ person: {
 }
 ```
 
+<br><br>
 ---
 
 # Functions
@@ -192,6 +174,7 @@ result: apply(square, 5)
 
 Functions can be stored, passed, and returned like any other value.
 
+<br><br>
 ---
 
 # Control Flow
@@ -214,6 +197,7 @@ if temperature ~= 30 {
 }
 ```
 
+<br><br>
 ---
 
 ## Loops
@@ -234,6 +218,7 @@ for item in inventory {
 }
 ```
 
+<br><br>
 ---
 
 # Probability & Stochastic Computation
@@ -248,6 +233,7 @@ temperature: 30 ~ 5
 
 Represents values between 25 and 35.
 
+<br><br>
 ---
 
 ## Boolean Fluxions
@@ -263,6 +249,7 @@ Represents:
 50% false
 ```
 
+<br><br>
 ---
 
 ## Random Sampling
@@ -273,6 +260,7 @@ noise: <>
 
 Generates a value between 0 and 1.
 
+<br><br>
 ---
 
 ## Weighted Distributions
@@ -283,6 +271,7 @@ choice: <0.1:"A", 0.4:"B", 0.5:"C">
 
 Produces weighted probabilistic outcomes.
 
+<br><br>
 ---
 
 # Approximate Equality
@@ -299,6 +288,7 @@ if reading ~= expected {
 
 This becomes particularly useful when working with simulations, sensors, scientific computation, and AI systems.
 
+<br><br>
 ---
 
 # Pipelines
@@ -317,6 +307,7 @@ data
 
 Pipelines allow computations to be expressed as flows rather than nested calls.
 
+<br><br>
 ---
 
 # Lattices
@@ -343,6 +334,7 @@ grid: |
 |
 ```
 
+<br><br>
 ---
 
 ## Dataset Mode
@@ -361,6 +353,92 @@ Column access:
 students.Physics
 ```
 
+<br><br>
+---
+
+# Input & Output
+
+Output:
+
+```***tars***
+>>> "Hello World"
+```
+
+Input:
+
+```***tars***
+name: <<<
+```
+
+Prompted Input:
+
+```***tars***
+name: <<< "Enter your name"
+```
+
+<br><br>
+---
+
+# File Operations
+
+Read:
+
+```***tars***
+content: read("data.txt")
+```
+
+Write:
+
+```***tars***
+write("output.txt", content)
+```
+
+Append:
+
+```***tars***
+append("log.txt", "entry")
+```
+
+<br><br>
+---
+
+# Error Handling
+
+```***tars***
+try {
+    risky()
+}
+catch err {
+    >>> err
+}
+finally {
+    cleanup()
+}
+```
+
+<br><br>
+---
+# Time
+
+Time is a native construct within ***tars***.
+
+```***tars***
+#timer.start()
+
+if #timer = 10 {
+    >>> "Done"
+}
+```
+
+Additional temporal systems include:
+
+* Timers
+* Temporal conditions
+* Scheduling
+* Time-aware simulations
+* State evolution
+
+<br><br>
 ---
 
 # Mathematics
@@ -394,29 +472,9 @@ trajectory:
     solve(projectile_equation)
 ```
 
+<br><br>
 ---
 
-# Time
-
-Time is a native construct within ***tars***.
-
-```***tars***
-#timer.start()
-
-if #timer = 10 {
-    >>> "Done"
-}
-```
-
-Additional temporal systems include:
-
-* Timers
-* Temporal conditions
-* Scheduling
-* Time-aware simulations
-* State evolution
-
----
 
 # Artificial Intelligence
 
@@ -436,6 +494,7 @@ model.train()
 prediction: model.predict(input)
 ```
 
+<br><br>
 ---
 
 ## Supported Data Types
@@ -447,47 +506,6 @@ prediction: model.predict(input)
 * Time Series
 * Graphs
 * Multimodal Data
-
----
-
-## Supported Architectures
-
-### Text
-
-* Transformer
-* GPT
-* BERT
-* T5
-* RNN
-* LSTM
-* GRU
-
-### Vision
-
-* CNN
-* Vision Transformer
-* GAN
-* Diffusion Models
-
-### Audio
-
-* Transformer
-* Wav2Vec
-* RNN
-
-### Graphs
-
-* GCN
-* GAT
-* GraphSAGE
-
-### Multimodal
-
-* CLIP
-* AudioCLIP
-* Perceiver IO
-
----
 
 ## Supported Tasks
 
@@ -503,67 +521,9 @@ prediction: model.predict(input)
 * Reinforcement Learning
 * Reasoning
 
+<br><br>
 ---
 
-# Input & Output
-
-Output:
-
-```***tars***
->>> "Hello World"
-```
-
-Input:
-
-```***tars***
-name: <<<
-```
-
-Prompted Input:
-
-```***tars***
-name: <<< "Enter your name"
-```
-
----
-
-# File Operations
-
-Read:
-
-```***tars***
-content: read("data.txt")
-```
-
-Write:
-
-```***tars***
-write("output.txt", content)
-```
-
-Append:
-
-```***tars***
-append("log.txt", "entry")
-```
-
----
-
-# Error Handling
-
-```***tars***
-try {
-    risky()
-}
-catch err {
-    >>> err
-}
-finally {
-    cleanup()
-}
-```
-
----
 
 # Modules
 
@@ -593,6 +553,7 @@ import "math.star" as math
 math.add(2,3)
 ```
 
+<br><br>
 ---
 
 # Example: Noisy Sensor Simulation
@@ -610,6 +571,7 @@ if reading ~= 30 {
 }
 ```
 
+<br><br>
 ---
 
 # Example: Machine Learning Pipeline
@@ -634,6 +596,7 @@ accuracy:
 >>> accuracy
 ```
 
+<br><br>
 ---
 
 # Example: Rocket Simulation
@@ -651,6 +614,7 @@ trajectory:
 >>> <trajectory>
 ```
 
+<br><br>
 ---
 
 # Current Progress
@@ -686,19 +650,19 @@ trajectory:
 * Security model
 * Cross compilation
 
+<br><br>
 ---
 
 # Implementation
 
 Compiler: JavaScript
 
-Runtime Target: Python
+Runtime Target: Python, Rust, C
 
 Execution Model:
 
 * Compiled
 * Interpreted
-* Hybrid execution
 
 File Extension:
 
@@ -714,6 +678,7 @@ model.star
 website.star
 ```
 
+<br><br>
 ---
 
 # Vision
@@ -724,6 +689,8 @@ The long-term objective is not merely to create another language.
 
 It is to create a computational environment capable of expressing everything from equations and simulations to agents, models, applications, and entirely new forms of computation through a single coherent framework.
 
+<br><br>
 ---
 
-> ***tars*** is a language for building systems that evolve, predict, learn, simulate, and reason.
+<br><br>
+<p align="center"> tars is a language for building systems that evolve, predict, learn, simulate, and reason. </p>
