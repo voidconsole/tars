@@ -1,3 +1,7 @@
+// Copyright (c) 2026 Satwik Bhusanur
+// SPDX-License-Identifier: Apache-2.0
+
+
 import parse from "./core/parser.js";
 import bench from "./benchmark.js";
 import { logVars } from "./core/handler.js";

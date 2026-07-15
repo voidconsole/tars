@@ -5,9 +5,14 @@
   "dependencies": {
     "some_library": "1.0.0"
   },
+  "toolsets" : ["Intelletum, Mathematica, Graphica, Webs, Fluxion"],
   "settings": {
     "optimize": true,
     "ai_debug": false,
-    "preserve_comments": true
+    "preserve_comments": true,
+    "stochastic_settings:": {
+	"engine" : "xoroshiro", 
+	"default_seed" : "Hello Universe",
+    }
   }
 }

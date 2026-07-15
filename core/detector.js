@@ -1,3 +1,7 @@
+// Copyright (c) 2026 Satwik Bhusanur
+// SPDX-License-Identifier: Apache-2.0
+
+
 //structure of syntax
 const syntaxAdv = {
         //assignment

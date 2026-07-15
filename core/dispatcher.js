@@ -1,3 +1,7 @@
+// Copyright (c) 2026 Satwik Bhusanur
+// SPDX-License-Identifier: Apache-2.0
+
+
 import * as handler from "./handler.js";
 
 function dispatch(buffer, meta, line) {

@@ -1,3 +1,7 @@
+// Copyright (c) 2026 Satwik Bhusanur
+// SPDX-License-Identifier: Apache-2.0
+
+
 const C = {
 	reset: "\x1b[0m",
 	bold: "\x1b[1m",

@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Satwik Bhusanur
+// SPDX-License-Identifier: Apache-2.0
+
 import dispatch from "./dispatcher.js";
 import punish from "./punisher.js";
 function parse(input) {

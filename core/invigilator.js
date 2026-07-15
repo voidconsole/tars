@@ -1,3 +1,7 @@
+// Copyright (c) 2026 Satwik Bhusanur
+// SPDX-License-Identifier: Apache-2.0
+
+
 // invigilate dispatched commands and forward to handler
 // This is where errors are caught and reported
 import * as handler from "./handler.js";

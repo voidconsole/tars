@@ -2,7 +2,10 @@
    TARS Compiler Test Suite
    Version: 1.0
    Coverage: All datatypes, Lattices, Fluxions, and Control Flow
+   Copyright (c) 2026 Satwik Bhusanur
+   SPDX-License-Identifier: Apache-2.0
 |=
+
 =] --- SECTION 1: BASIC VARIABLES & TYPES ---
 app_name: "TarsOS"
 version: 2i + 3j + 7k =] Quaternions 

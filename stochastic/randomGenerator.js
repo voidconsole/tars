@@ -1,3 +1,7 @@
+// Copyright (c) 2026 Satwik Bhusanur
+// SPDX-License-Identifier: Apache-2.0
+
+
 function rngSeries(seed){
 	// Goal: return a sequence of numbers based on the seed, which contains values bwteen 0 and 1
 	// The returned values must be returned one after the other each time the function is called. 

@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Satwik Bhusanur
+// SPDX-License-Identifier: Apache-2.0
+
 // import { performance } from "perf_hooks"; // in Node; in Deno use globalThis.performance
 
 function bench(func, s, iterations = 1000) {
