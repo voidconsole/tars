@@ -51,17 +51,16 @@ One ecosystem for machine learning.
 
 Another for scientific computing.
 
-Another for web development.
+And another for web development.
 
-Another for simulation.
+And Another for simulation.
 
-Another for data analysis.
+One more for data analysis.
 
 ***tars*** aims to provide a unified computational environment where these domains can coexist naturally.
 
-The goal is not to replace every tool.
-
-The goal is to remove unnecessary boundaries between them.
+The goal is not to replace every tool, but to remove unnecessary boundaries between them.
+To serve as a tool that matches reality.
 
 A neural network, a differential equation, a simulation, and a website are all systems.
 
