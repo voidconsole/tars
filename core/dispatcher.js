@@ -1,9 +1,8 @@
 // Copyright (c) 2026 Satwik Bhusanur
 // SPDX-License-Identifier: Apache-2.0
 
-
 import * as handler from "./handler.js";
-
+import punish from "./punisher.js";
 function dispatch(buffer, meta, line) {
 	// Conditions are checked in order of probability of occurances. 
 
@@ -12,6 +11,7 @@ function dispatch(buffer, meta, line) {
 	// TODO: Perform simple regex and manual checks to verify syntax structure
 	// TODO: Later, allow optional parentheses
 	if (meta.pivot) {
+
 		if (meta.pureColon) {
 			// function declaration
 		} else {
@@ -72,10 +72,24 @@ function dispatch(buffer, meta, line) {
 		let idx = buffer.indexOf(":"); // cannot be -1 because meta.pureColon is true, so no need to check
 		let left = buffer.slice(0, idx).trim();
 		let right = buffer.slice(idx + 1).trim();
-		if (left.length === 0 || right.length === 0) {
-			// TODO: replace error with punisher's engine 
-			throw new Error("Invalid syntax: Left or right side of colon is empty");
+		if (left.length === 0) {
+			let lines = buffer.split("\n");
+			punish(
+				`Inappropriate assignment =[ \nMissing identifier before ":"`,
+				"Syntax",
+				line - lines.length + 1,
+				lines
+			);
+		}else if (right.length === 0) {
+			let lines = buffer.split("\n");
+			punish(
+				`Inappropriate assignment =[ \nMissing expression or literal after ":"`,
+				"Syntax",
+				line - lines.length + 1,
+				lines, 0, left.length
+			);
 		}
+	
 		let cb0 = right.charCodeAt(0);
 		let cbn = right.charCodeAt(right.length - 1);
 		// simple assignment
@@ -99,7 +113,7 @@ function dispatch(buffer, meta, line) {
 					right,
 					"array",
 				);
-				return;
+				return
 			} else {
 				// does not start or end with [] but contains it. TODO: 
 			}
@@ -135,6 +149,23 @@ function dispatch(buffer, meta, line) {
 					"simple",
 				);
 			}
+		}else{
+			// is an assignment but multiline, and is not an array, object or lattice.
+			if((right.startsWith("\"") || right.startsWith("'"))&& right.endsWith("\"") || right.endsWith("'")){
+				punish(
+					`Inappropriate assignment =[ \nPlease use (\`) for multiline strings`,
+					"Syntax",
+					line - buffer.split("\n").length + 1,
+					buffer.split("\n")
+				);
+			}
+			punish(
+				`Inappropriate assignment =[ \nMultiline assignments can only be \n strings, arrays, objects or lattices`,
+				"Syntax",
+				line - buffer.split("\n").length + 1,
+				buffer.split("\n")
+			);
+
 		}
 	}
 	else if ( // Do not put after pure parent or curly, for they may be inside a STD in or out.
@@ -162,22 +193,25 @@ function dispatch(buffer, meta, line) {
 	else if (meta.curly && c0 === 123 && buffer.charCodeAt(1) === 32) { // a better check would be if c0 = {. is that too strict? 
 		// Simply blocks of code
 	} else {
-
 		//TODO: Check for prebuild functions, pipelines, increments, return statments, and other such non trivial exceptions.
 
-
-		// If none of the above conditions are met, throw an error
-		// TODO: replace error with punisher's engine
-		throw (`\x1b[1m\x1b[34m
-===========================================\x1b[0m
-    ${line} | ${buffer}
-\x1b[1m\x1b[34m===========================================\x1b[0m
-\x1b[1m\x1b[31mReference error\x1b[0m at line ${line} :(
-\x1b[3m\x1b[34m${buffer}\x1b[0m is not defined.
-
-`);
-
-		// throw new Error("Unrecognized syntax structure:", buffer);
+		// If none of the above conditions are met, check if an expression or variable name
+		// if not valid expression, throw syntax error
+		// if valid name but not defined, throw reference error
+		try {
+			if (!handler.expressionHandler(buffer)) {
+				throw new Error("Invalid expression");
+			}
+		} catch (error) {
+			let lines = buffer.split("\n");
+			punish(
+				`Unrecognized syntax structure =[`,
+				"Syntax",
+				line - lines.length + 1,
+				lines
+			);
+		}
 	}
 }
+
 export default dispatch;

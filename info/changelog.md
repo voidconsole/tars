@@ -1,9 +1,16 @@
 Commit elboration worth noting.
 
 ---
+
+- designed the error messages and built punisher
+- used punisher for errors in dispacther and parser
+- handled a few edge cases mentioned in dispatcher
+- added journal from dimensionless notebook
+
+---
 - major developments in dispatcher
 - added syntax for temporal and flux types
-- added parial error handling, created punisher and invigilator
+- added partial error handling, created punisher and invigilator
 - developments in handler and supported variable writing
 - changed syntax for assignment
 - worked on input handling

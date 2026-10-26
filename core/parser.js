@@ -3,7 +3,7 @@
 
 import dispatch from "./dispatcher.js";
 import punish from "./punisher.js";
-function parse(input) {
+function parse(input, scope='root') {
 	// Standardize newlines and add a terminal newline for final flush
 	input = input.replace(/\r\n/g, "\n").replace(/\r/g, "\n") + "\n";
 	let inputLength = input.length;
@@ -20,6 +20,7 @@ function parse(input) {
 	let inMultiComment = false;
 	let skipFlush = false;
 	let lineCount = 0;
+	// let rowCount = 0;
 	let lastFlushedLine = 0;
 	let meta = {
 		curly: false,
@@ -29,13 +30,16 @@ function parse(input) {
 		pureColon: false,
 		pivot: null,
 	};
+	// pure refers to being at the current highest scope
 
 	for (let i = 0; i < inputLength; i++) {
 		const charCode = input.charCodeAt(i);
 		const char = input[i];
+		// rowCount++;
 		switch (charCode) {
 			case 10: // '\n'
 				lineCount++;
+				// rowCount=0;
 				//---------------------------------------------------------------------------------
 				if (inSingleComment) { // \n Newline ends single-line comment
 					inSingleComment = false;
@@ -56,21 +60,21 @@ function parse(input) {
 
 					if (inString) {
 						const quoteChar = String.fromCharCode(stringChar);
-						message = `Unclosed string literal. Expected a matching closing quote (${quoteChar}).`;
+						message = `Unclosed string literal\nExpected a matching literal (${quoteChar})`;
 					} else if (bracketStack.length > 0) {
 						const topOfStack = bracketStack[bracketStack.length - 1];
 						switch (topOfStack) {
 							case 123: // '{'
-								message = "Unmatched opening curly brace '{' detected.";
+								message = "Unmatched '{' \nExpected appropriate '}' within same scope";
 								break;
 							case 91:  // '['
-								message = "Unmatched opening square bracket '[' detected.";
+								message = "Unmatched '[' \nExpected appropriate ']' within same scope";
 								break;
 							case 40:  // '('
-								message = "Unmatched opening parenthesis '(' detected.";
+								message = "Unmatched '(' \nExpected appropriate ')' within same scope	";
 								break;
 							case 124: // '|'
-								message = "Unmatched lattice delimiter '|' detected.";
+								message = "Unmatched '|' \nExpected appropriate '|' within same scope";
 								break;
 						}
 					}
@@ -79,8 +83,8 @@ function parse(input) {
 						message,
 						"Syntax",
 						lastFlushedLine + 1,
-						errorSnippet,
-					);
+						errorSnippet.split("\n")[0],
+					);	
 				}
 				break;
 			case 9: // '\t'
@@ -151,12 +155,29 @@ function parse(input) {
 						depthParen++;
 						break;
 					case 125: // '}'
-						if (bracketStack.length === 0 || bracketStack.pop() !== 123) {
+						if (bracketStack.length == 0) {
+							const bufferOut = buffer.join("").split("\n")
 							punish(
-								`Unmatched curly brace '}' detected`,
+								`Unmatched '}'  \nExpected appropriate '{' within same scope `,
 								"Syntax",
-								lineCount,
-								buffer.join("").slice(0, 30),
+								lineCount-1,
+								bufferOut,
+								bufferOut.length-1,
+								bufferOut[bufferOut.length-1].length-2,
+								3
+							);
+							return;
+						}else if (bracketStack.pop() !== 123) {
+							// popping is not dangerous, because if match, then usual closing popped, else, not matched, throw error.
+							const bufferOut = buffer.join("").split("\n")
+							punish(
+								`'{' found at inappropriate location \nPlease check the scope of the '{' and '}'`,
+								"Syntax",
+								lineCount - 1,
+								bufferOut,
+								bufferOut.length - 1,
+								bufferOut[bufferOut.length - 1].length - 2,
+								3
 							);
 							return;
 						}
@@ -177,24 +198,58 @@ function parse(input) {
 						}
 						break;
 					case 93: // ']'
-						if (bracketStack.length === 0 || bracketStack.pop() !== 91) {
+						if (bracketStack.length == 0) {
+							const bufferOut = buffer.join("").split("\n")
 							punish(
-								`Unmatched square bracket ']' detected`,
+								`Unmatched ']'  \nExpected appropriate '[' within same scope `,
 								"Syntax",
-								lineCount,
-								buffer.join("").slice(0, 30),
+								lineCount - 1,
+								bufferOut,
+								bufferOut.length - 1,
+								bufferOut[bufferOut.length - 1].length - 2,
+								3
+							);
+							return;
+						} else if (bracketStack.pop() !== 91) {
+							// popping is not dangerous, because if match, then usual closing popped, else, not matched, throw error.
+							const bufferOut = buffer.join("").split("\n")
+							punish(
+								`']' found at inappropriate location \nPlease check the scope of the '[' and ']'`,
+								"Syntax",
+								lineCount - 1,
+								bufferOut,
+								bufferOut.length - 1,
+								bufferOut[bufferOut.length - 1].length - 2,
+								3
 							);
 							return;
 						}
 						depthSquare--;
 						break;
 					case 41: // ')'
-						if (bracketStack.length === 0 || bracketStack.pop() !== 40) {
+						if (bracketStack.length == 0) {
+							const bufferOut = buffer.join("").split("\n")
 							punish(
-								`Unmatched parenthesis ')' detected`,
+								`Unmatched ')'  \nExpected appropriate '(' within same scope `,
 								"Syntax",
-								lineCount,
-								buffer.join("").slice(0, 30),
+								lineCount - 1,
+								bufferOut,
+								bufferOut.length - 1,
+								bufferOut[bufferOut.length - 1].length - 2,
+								3
+							);
+							return;
+						} else if (bracketStack.pop() !== 40) {
+							// popping is not dangerous, because if match, then usual closing popped, else, not matched, throw error.
+							const bufferOut = buffer.join("").split("\n")
+							punish(
+								`')' found at inappropriate location \nPlease check the scope of the '(' and ')'`,
+								"Syntax",
+								lineCount - 1,
+								bufferOut,
+								bufferOut.length - 1,
+								bufferOut[bufferOut.length - 1].length - 2,
+								3
 							);
 							return;
 						}

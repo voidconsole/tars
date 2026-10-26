@@ -1,14 +1,10 @@
 "basically here we have configurations for tars framework, like whether to run directly on js, or compile to python. Plus, other needed settings."
 {
   "mode": "interpreter/compiler", 
-  "python_version": "3.9",
-  "dependencies": {
-    "some_library": "1.0.0"
-  },
   "toolsets" : ["Intelletum, Mathematica, Graphica, Webs, Fluxion"],
   "settings": {
-    "optimize": true,
     "ai_debug": false,
+    "rational_compute": false,
     "preserve_comments": true,
     "stochastic_settings:": {
 	"engine" : "xoroshiro", 
