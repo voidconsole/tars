@@ -29,7 +29,7 @@ the syntax.md gives all the syntax for the language, with their usecases, includ
 i would also urge you to try uncommenting/commenting console.logs in core/
 1. parser.js
 2. dispatcher.js
-3. handler.js
+3. orchestrator.js
 to understand how the input is being handled at each step.  
 the code architecture for these files are there in the google drive and also briefly in the developer journal. 
 

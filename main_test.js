@@ -3,7 +3,7 @@
 
 import parse from "./core/parser.js";
 import bench from "./benchmark.js";
-import { logVars } from "./core/handler.js";
+import { logVars } from "./core/orchestrator.js";
 
 async function loadStochastic() {
 	const algoText = await Deno.readTextFile("./stochastic/randomAlgorithms.js");

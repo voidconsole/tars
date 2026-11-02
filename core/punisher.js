@@ -126,16 +126,16 @@ function punish(message, type, startline, source, line = 0, start = 0, length = 
 	// line is relative to startline
 	let error;
 	switch (type) {
-		case "Reference":
+		case "reference":
 			error = new tarsReferenceError(message, line, source, startline, start, length);
 			break;
-		case "Syntax":
+		case "syntax":
 			error = new tarsSyntaxError(message, line, source, startline, start, length);
 			break;
-		case "Type":
+		case "type":
 			error = new tarsTypeError(message, line, source, startline, start, length);
 			break;
-		case "Runtime":
+		case "runtime":
 			error = new tarsRuntimeError(message, line, source, startline, start, length);
 			break;
 		default:

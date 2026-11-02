@@ -1,7 +1,7 @@
 // Copyright (c) 2026 Satwik Bhusanur
 // SPDX-License-Identifier: Apache-2.0
 
-import * as handler from "./handler.js";
+import * as handle from "./orchestrator.js";
 import punish from "./punisher.js";
 function dispatch(buffer, meta, line) {
 	// Conditions are checked in order of probability of occurances. 
@@ -76,22 +76,23 @@ function dispatch(buffer, meta, line) {
 			let lines = buffer.split("\n");
 			punish(
 				`Inappropriate assignment =[ \nMissing identifier before ":"`,
-				"Syntax",
+				"syntax",
 				line - lines.length + 1,
 				lines
 			);
-		}else if (right.length === 0) {
+		} else if (right.length === 0) {
 			let lines = buffer.split("\n");
 			punish(
 				`Inappropriate assignment =[ \nMissing expression or literal after ":"`,
-				"Syntax",
+				"syntax",
 				line - lines.length + 1,
 				lines, 0, left.length
 			);
 		}
-	
+
 		let cb0 = right.charCodeAt(0);
 		let cbn = right.charCodeAt(right.length - 1);
+		
 		// simple assignment
 		if (meta.lattice) {
 			if (cb0 === 124 && cbn === 124) { // '|' // lattice checks
@@ -108,7 +109,7 @@ function dispatch(buffer, meta, line) {
 			if (cb0 === 91 && cbn === 93) { // '[' and ']'
 				// This ASSUMES starts with [ and ends with ]. TODO: make sure there are no edge cases
 				console.log("Array assignment detected");
-				handler.assignment(
+				handle.assignment(
 					left,
 					right,
 					"array",
@@ -121,7 +122,7 @@ function dispatch(buffer, meta, line) {
 			if (cb0 === 123 && cbn === 125) { // '{' and '}'
 				// assumes starts with { and ends with }. TODO: make sure there are no edge cases
 				console.log("Object assignment detected");
-				handler.assignment(
+				handle.assignment(
 					left,
 					right,
 					"object",
@@ -137,31 +138,40 @@ function dispatch(buffer, meta, line) {
 				right.charCodeAt(1) === 60 &&
 				right.charCodeAt(2) === 60
 			) {
-				handler.assignment(
+				handle.assignment(
 					left,
 					right,
 					"stdin",
 				);
 			} else {
-				return handler.assignment(
+				let test = left.charCodeAt(left.length - 1)
+				if (test === 43 || test === 45 || test === 42 || test === 47 || test === 37 || test === 94) { // + - * / % ^
+					return handle.assignment(
+						left.slice(0, -1).trim(),
+						right,
+						"compound",
+					);
+				}
+				return handle.assignment(
 					left,
 					right,
 					"simple",
 				);
+				
 			}
-		}else{
+		} else {
 			// is an assignment but multiline, and is not an array, object or lattice.
-			if((right.startsWith("\"") || right.startsWith("'"))&& right.endsWith("\"") || right.endsWith("'")){
+			if ((right.startsWith("\"") || right.startsWith("'")) && right.endsWith("\"") || right.endsWith("'")) {
 				punish(
 					`Inappropriate assignment =[ \nPlease use (\`) for multiline strings`,
-					"Syntax",
+					"syntax",
 					line - buffer.split("\n").length + 1,
 					buffer.split("\n")
 				);
 			}
 			punish(
 				`Inappropriate assignment =[ \nMultiline assignments can only be \n strings, arrays, objects or lattices`,
-				"Syntax",
+				"syntax",
 				line - buffer.split("\n").length + 1,
 				buffer.split("\n")
 			);
@@ -173,13 +183,13 @@ function dispatch(buffer, meta, line) {
 		buffer.charCodeAt(2) === 62
 	) {
 		console.log("STDOUT detected");
-		return handler.stdout(buffer.slice(3).trim());
+		return handle.stdout(buffer.slice(3).trim());
 	} else if (
 		c0 === 60 && buffer.charCodeAt(1) === 60 &&
 		buffer.charCodeAt(2) === 60
 	) { // '<<<'
 		console.log("STDIN detected");
-		return handler.stdin(buffer.slice(3).trim());
+		return handle.stdin(buffer.slice(3).trim());
 	}
 	else if (meta.paren) {
 		console.log("Function call detected");
@@ -187,7 +197,7 @@ function dispatch(buffer, meta, line) {
 	}
 	else if (c0 === 64) {
 		console.log("SEED creation detected");
-		return handler.seedCreator(buffer.slice(1).trim());
+		return handle.seedCreator(buffer.slice(1).trim());
 	}
 	// TODO: check for things like hello++ or --hello or hello += 1 etc.
 	else if (meta.curly && c0 === 123 && buffer.charCodeAt(1) === 32) { // a better check would be if c0 = {. is that too strict? 
@@ -199,17 +209,18 @@ function dispatch(buffer, meta, line) {
 		// if not valid expression, throw syntax error
 		// if valid name but not defined, throw reference error
 		try {
-			if (!handler.expressionHandler(buffer)) {
+			if (!handle.expressionHandler(buffer)) {
 				throw new Error("Invalid expression");
 			}
+			console.log(handle.expressionHandler(buffer))
 		} catch (error) {
 			let lines = buffer.split("\n");
-			punish(
-				`Unrecognized syntax structure =[`,
-				"Syntax",
-				line - lines.length + 1,
-				lines
-			);
+			// punish(
+			// 	`Unrecognized syntax structure =[`,
+			// 	"syntax",
+			// 	line - lines.length + 1,
+			// 	lines
+			// );
 		}
 	}
 }

@@ -3,7 +3,8 @@
 
 import dispatch from "./dispatcher.js";
 import punish from "./punisher.js";
-function parse(input, scope='root') {
+import { state } from "./registrar.js";
+function parse(input, scope = 'root') {
 	// Standardize newlines and add a terminal newline for final flush
 	input = input.replace(/\r\n/g, "\n").replace(/\r/g, "\n") + "\n";
 	let inputLength = input.length;
@@ -22,6 +23,10 @@ function parse(input, scope='root') {
 	let lineCount = 0;
 	// let rowCount = 0;
 	let lastFlushedLine = 0;
+	let phasor = state.phasor // current scope, 0 is root
+	if (phasor !== 0) {
+		lineCount = state.line
+	}
 	let meta = {
 		curly: false,
 		square: false,
@@ -45,7 +50,7 @@ function parse(input, scope='root') {
 					inSingleComment = false;
 				}
 				//----------------------------------------------------------------------------------
-				 // Punish if end of input and buffer has content and unclosed brackets.
+				// Punish if end of input and buffer has content and unclosed brackets.
 				if (
 					i === inputLength - 1 &&
 					buffer.length > 0 &&
@@ -81,10 +86,10 @@ function parse(input, scope='root') {
 
 					punish(
 						message,
-						"Syntax",
+						"syntax",
 						lastFlushedLine + 1,
 						errorSnippet.split("\n")[0],
-					);	
+					);
 				}
 				break;
 			case 9: // '\t'
@@ -104,14 +109,14 @@ function parse(input, scope='root') {
 				}
 				if (
 					inMultiComment &&
-					input.charCodeAt(i - 1) === 124	
+					input.charCodeAt(i - 1) === 124
 				) { // "|=" ends multi-line
 					inMultiComment = false;
 					continue;
 				}
-			
+
 		}
-		if (inSingleComment || inMultiComment) {continue;}
+		if (inSingleComment || inMultiComment) { continue; }
 		else {
 			//TODO if newline and not in string, lattice, then dont push to buffer
 			buffer.push(char); // only push if not in comment
@@ -159,20 +164,20 @@ function parse(input, scope='root') {
 							const bufferOut = buffer.join("").split("\n")
 							punish(
 								`Unmatched '}'  \nExpected appropriate '{' within same scope `,
-								"Syntax",
-								lineCount-1,
+								"syntax",
+								lineCount - 1,
 								bufferOut,
-								bufferOut.length-1,
-								bufferOut[bufferOut.length-1].length-2,
+								bufferOut.length - 1,
+								bufferOut[bufferOut.length - 1].length - 2,
 								3
 							);
 							return;
-						}else if (bracketStack.pop() !== 123) {
+						} else if (bracketStack.pop() !== 123) {
 							// popping is not dangerous, because if match, then usual closing popped, else, not matched, throw error.
 							const bufferOut = buffer.join("").split("\n")
 							punish(
 								`'{' found at inappropriate location \nPlease check the scope of the '{' and '}'`,
-								"Syntax",
+								"syntax",
 								lineCount - 1,
 								bufferOut,
 								bufferOut.length - 1,
@@ -202,7 +207,7 @@ function parse(input, scope='root') {
 							const bufferOut = buffer.join("").split("\n")
 							punish(
 								`Unmatched ']'  \nExpected appropriate '[' within same scope `,
-								"Syntax",
+								"syntax",
 								lineCount - 1,
 								bufferOut,
 								bufferOut.length - 1,
@@ -215,7 +220,7 @@ function parse(input, scope='root') {
 							const bufferOut = buffer.join("").split("\n")
 							punish(
 								`']' found at inappropriate location \nPlease check the scope of the '[' and ']'`,
-								"Syntax",
+								"syntax",
 								lineCount - 1,
 								bufferOut,
 								bufferOut.length - 1,
@@ -231,7 +236,7 @@ function parse(input, scope='root') {
 							const bufferOut = buffer.join("").split("\n")
 							punish(
 								`Unmatched ')'  \nExpected appropriate '(' within same scope `,
-								"Syntax",
+								"syntax",
 								lineCount - 1,
 								bufferOut,
 								bufferOut.length - 1,
@@ -244,7 +249,7 @@ function parse(input, scope='root') {
 							const bufferOut = buffer.join("").split("\n")
 							punish(
 								`')' found at inappropriate location \nPlease check the scope of the '(' and ')'`,
-								"Syntax",
+								"syntax",
 								lineCount - 1,
 								bufferOut,
 								bufferOut.length - 1,
@@ -276,8 +281,8 @@ function parse(input, scope='root') {
 						inString = true;
 						stringChar = charCode;
 						break;
-//=========================================================================================//
-// Flushing if charcode = \n AND not in string
+					//=========================================================================================//
+					// Flushing if charcode = \n AND not in string
 					case 10:
 						if (
 							!inLattice &&
@@ -310,7 +315,7 @@ function parse(input, scope='root') {
 								lastFlushedLine = lineCount;
 							}
 						}
-						
+
 				}
 				// ===========================================================================================
 				// Code for characters inside strings
@@ -331,7 +336,7 @@ function parse(input, scope='root') {
 				inString = false;
 				stringChar = null;
 			}
-			
+
 		}
 
 	}

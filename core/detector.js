@@ -27,6 +27,7 @@ const syntaxAdv = {
         call: /^[A-Za-z]\w*[^\S\r\n]*\((.*)\)$/,
 };
 const syntax = {
+	varname: /^[a-zA-Z_$][a-zA-Z0-9_$]*$/,
         assignment: /[A-Za-z]\w*[^\S\r\n]*=[^\S\r\n]*/,
         if: /if[^\S\r\n]*\(/,
         else_if: /else if[^\S\r\n]*\(/,

@@ -4,7 +4,7 @@
 
 import parse from "./core/parser.js";
 import bench from "./benchmark.js";
-import { logVars } from "./core/handler.js";
+import { logVars } from "./core/orchestrator.js";
 if (import.meta.main) {
         // handleConfig('path/to/config.file')
         Deno.readTextFile("input.star").then((data) => {

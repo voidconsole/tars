@@ -7,7 +7,7 @@
 |=
 
 =] --- SECTION 1: BASIC VARIABLES & TYPES ---
-app_name: "TarsOS"
+app_
 version: 2i + 3j + 7k =] Quaternions 
 sensor_readings: 34 ~ 5
 is_active: maybe
@@ -17,7 +17,7 @@ tags: ["compiler", "fuzzy-logic", ["sub-tag", 42]]
 =]     timeout: 500;
 =]     buffer: 0.05;
 =] }
-weather = <30: "Sunny", 50: "Cloudy", 20: "Rainy">
+weather: <30: "Sunny", 50: "Cloudy", 20: "Rainy">
 =] --- SECTION 2: LATTICE STRUCTURES ---
 =] Matrix: 2D Grid
 spatial_grid: |

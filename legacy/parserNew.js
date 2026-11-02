@@ -214,7 +214,7 @@ function parse(input) {
 				const bufferStr = input.slice(start, end + 1).trim();
 				punish(
 					`Unmatched brackets detected`,
-					"Syntax",
+					"syntax",
 					lastFlushedLine + 1,
 					bufferStr.slice(
 						0,

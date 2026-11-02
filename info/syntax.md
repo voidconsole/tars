@@ -369,16 +369,16 @@ data -> clean -> normalize -> export
 
 ---
 
-# Lattice System (Matrix + Sheet Unified)
+# Lattice System
 
 ## Matrix Mode
 
 ```
 // No header → matrix mode
 grid: |
-  1, 2, 3
-  4, 5, 6
-  7, 8, 9
+  1, 2, 3;
+  4, 5, 6;
+  7, 8, 9;
 |
 ```
 
@@ -392,9 +392,9 @@ grid: |
 ```
 // Header → named columns
 data: |
-  Name, Age, Score
-  alice, 28, 0.91
-  bob, 34, 0.87
+  Name, Age, Score;
+  alice, 28, 0.91;
+  bob, 34, 0.87;
 |
 ```
 
@@ -403,6 +403,15 @@ data: |
 ```
 data.Name
 ```
+
+# Nesting matrices
+
+M : ||a1, b1; c1, d1|, |a2, b2; c2, d2|; 
+	 |a3, b3; c3, d3|, |a4, b4; c4, d4|| is equivalent to
+https://cdn.hackclub.com/01a053d4-d16b-7506-857c-74c724998e01/image.png
+
+or equivalently M : |X, Y; Z, W| where X,Y,Z,W are the corresponding lattices defined in the same scope
+
 
 ---
 

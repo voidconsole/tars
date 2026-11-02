@@ -207,7 +207,7 @@ function parse(input) {
 					.trim();
 				punish(
 					`Unmatched brackets detected`,
-					"Syntax",
+					"syntax",
 					lastFlushedLine + 1,
 					bufferStr.slice(
 						0,

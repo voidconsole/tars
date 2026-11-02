@@ -1,3 +1,17 @@
+## state machine
+
+so instead of passing variables across the files, i thought of using a state machine that can hold the current line number, and scope. it then struck me i can move the variables and function bindings to this file instead of the handler. thus in this registrar, i initially used nested objects for scopes and each object having its own Map to store the bindings in that scope. but then i realized that was terribly slow and i was surprised to find out a class definition works much better and thus i made a structure which takes a parent and binds the child scope to its parent, and thus each new instance is a child scope. aptly i named this structure phase (space) and added the methods to read and write. i also decided to have a single map for both variables and functions. the phase class looks for a element and climbs up its parents to find, and this is quite effeicient due to classes and no memory reallocations as in with a object. the global scope would be the root phase.
+i also needed a way to store the lines, and clearly objects were too slow. i thought of using premade classes, which although fast, i thought i could use an array, though its unconvientient accessing items by index. i almost went with a class called state but then i realized the only things im storing there are line number, column number and current phase. for storing phases the convenient way would be to use objects and creating new items for each, when i realized i didnt actually have to name the phase instances, i could just push the instances into an array, and the array index would be the phase space's name (aptly phasor). thus now the phasor is also an integer, and the state machine can simply be a fixed length integer array, hyperoptimizing state access, read and writes. and then i had another shocking find, unlike i previously thoughy, fixed integer typed arrays are actually slower for small fixed size elements because the js compiler has to contain them in a warpper and send them lower level, as compared to a dynamic array. and then stupidly, just storing the values themselves in bare variables is even faster. which apparantly is also the most trivial way i could have made a state machine. _sighs_
+anddd well, is that wasn't enough, i could say, as i found out, in my defence that when you realize the state machine is going to be exported and read, single variables does horribly cause you need to import and export 3 varibales, and i think this was the reason i picked containers albeit lost track of it. either way, arrays would be faster, but objects would have better nomenclature and the loss wasnt significant, about 1.1-1.5x slower, so i went with that. 
+i also created helper functions to fetch current phase, register new phases and get a particular phase, instead of exporting the entire `space` at once, on each import.
+i also thought to store the phasor on the phase itself, incase i had to jump between phases, having access to current phase will let me skip to parent's phase instead of trying to find the child. this will help in nesting and backtracking.
+
+
+
+
+
+
+
 ## designing the punisher
 tars log: error handling
 played with ansi, colors, formatting usability, and the tone of error messages.

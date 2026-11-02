@@ -1,5 +1,11 @@
 Commit elboration worth noting.
 
+
+- created a registrar to bookkeep variable and function bindings; and perform as a statemachine during runtime, keeping line numbers and current scopes (phasors) and optimized it
+- scope management via phases and phasors in registrar
+- designated ~~handler~~ orchestrator to manage and overlook all operations and commands for the processing stream, connecting parser, dispatcher, punisher and registrar
+- optimized inviglator and resolvers
+
 ---
 
 - designed the error messages and built punisher
