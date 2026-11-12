@@ -7,7 +7,7 @@
 |=
 
 =] --- SECTION 1: BASIC VARIABLES & TYPES ---
-app_
+
 version: 2i + 3j + 7k =] Quaternions 
 sensor_readings: 34 ~ 5
 is_active: maybe
@@ -21,10 +21,12 @@ weather: <30: "Sunny", 50: "Cloudy", 20: "Rainy">
 =] --- SECTION 2: LATTICE STRUCTURES ---
 =] Matrix: 2D Grid
 spatial_grid: |
-    [1.0, 0.0, 0.0],
-    [0.0, 1.0, 0.0],
-    [0.0, 0.0, 1.0]
+    1.0, 0.0, 0.0;
+    0.0, 1.0, 0.0;
+    0.0, 0.0, 1.0;
 |
+>>> spatial_grid == lattice.build(3, 3, (i, j) => (if i === j then 1.0 else 0.0)) =] returns true
+>>> spatial_grid[-1, -1] =] returns 1.0
 
 =] Sheet: Column-oriented
 data_sheet: |
@@ -106,7 +108,7 @@ count *: 2
 count ^: 2
 
 >>> "Please enter system code: "
-user_input: <<< "The prompt acing as standard output"
+=] user_input: <<< "The prompt acing as standard output"
 
 final_output: "System Result: " + user_input
 >>> final_output

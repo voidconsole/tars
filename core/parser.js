@@ -4,7 +4,7 @@
 import dispatch from "./dispatcher.js";
 import punish from "./punisher.js";
 import { state } from "./registrar.js";
-function parse(input, scope = 'root') {
+function parse(input) {
 	// Standardize newlines and add a terminal newline for final flush
 	input = input.replace(/\r\n/g, "\n").replace(/\r/g, "\n") + "\n";
 	let inputLength = input.length;
@@ -14,18 +14,18 @@ function parse(input, scope = 'root') {
 	let depthCurly = 0;
 	let depthSquare = 0;
 	let depthParen = 0;
-	let bracketStack = [];
+	let bracketStack = []; // new Int32Array(1996); // TODO: consider changing to typed integer array for performance; handle edge cases and resizing,
 	let inString = false;
 	let stringChar = null;
 	let inSingleComment = false;
 	let inMultiComment = false;
 	let skipFlush = false;
-	let lineCount = 0;
+	// let state.line = 0;
 	// let rowCount = 0;
 	let lastFlushedLine = 0;
 	let phasor = state.phasor // current scope, 0 is root
-	if (phasor !== 0) {
-		lineCount = state.line
+	if (phasor == 0) {
+		state.line = 0
 	}
 	let meta = {
 		curly: false,
@@ -43,7 +43,7 @@ function parse(input, scope = 'root') {
 		// rowCount++;
 		switch (charCode) {
 			case 10: // '\n'
-				lineCount++;
+				state.line++;
 				// rowCount=0;
 				//---------------------------------------------------------------------------------
 				if (inSingleComment) { // \n Newline ends single-line comment
@@ -165,7 +165,7 @@ function parse(input, scope = 'root') {
 							punish(
 								`Unmatched '}'  \nExpected appropriate '{' within same scope `,
 								"syntax",
-								lineCount - 1,
+								state.line - 1,
 								bufferOut,
 								bufferOut.length - 1,
 								bufferOut[bufferOut.length - 1].length - 2,
@@ -178,7 +178,7 @@ function parse(input, scope = 'root') {
 							punish(
 								`'{' found at inappropriate location \nPlease check the scope of the '{' and '}'`,
 								"syntax",
-								lineCount - 1,
+								state.line - 1,
 								bufferOut,
 								bufferOut.length - 1,
 								bufferOut[bufferOut.length - 1].length - 2,
@@ -208,7 +208,7 @@ function parse(input, scope = 'root') {
 							punish(
 								`Unmatched ']'  \nExpected appropriate '[' within same scope `,
 								"syntax",
-								lineCount - 1,
+								state.line - 1,
 								bufferOut,
 								bufferOut.length - 1,
 								bufferOut[bufferOut.length - 1].length - 2,
@@ -221,7 +221,7 @@ function parse(input, scope = 'root') {
 							punish(
 								`']' found at inappropriate location \nPlease check the scope of the '[' and ']'`,
 								"syntax",
-								lineCount - 1,
+								state.line - 1,
 								bufferOut,
 								bufferOut.length - 1,
 								bufferOut[bufferOut.length - 1].length - 2,
@@ -237,7 +237,7 @@ function parse(input, scope = 'root') {
 							punish(
 								`Unmatched ')'  \nExpected appropriate '(' within same scope `,
 								"syntax",
-								lineCount - 1,
+								state.line - 1,
 								bufferOut,
 								bufferOut.length - 1,
 								bufferOut[bufferOut.length - 1].length - 2,
@@ -250,7 +250,7 @@ function parse(input, scope = 'root') {
 							punish(
 								`')' found at inappropriate location \nPlease check the scope of the '(' and ')'`,
 								"syntax",
-								lineCount - 1,
+								state.line - 1,
 								bufferOut,
 								bufferOut.length - 1,
 								bufferOut[bufferOut.length - 1].length - 2,
@@ -294,9 +294,9 @@ function parse(input, scope = 'root') {
 							if (bufferStr.length > 0 && !skipFlush) {
 								commandNum++;
 								console.log(
-									`${commandNum} ⚜️  ${bufferStr} ⚜️   on line ${lineCount}`,
+									`${commandNum} ⚜️  ${bufferStr} ⚜️   on line ${state.line}`,
 								);
-								dispatch(bufferStr, meta, lineCount);
+								dispatch(bufferStr, meta, state.line);
 								// Reset state for next command
 								buffer = [];
 								meta.lattice = false;
@@ -305,14 +305,14 @@ function parse(input, scope = 'root') {
 								meta.paren = false;
 								meta.pureColon = false;
 								meta.pivot = null;
-								lastFlushedLine = lineCount;
+								lastFlushedLine = state.line;
 
 								console.log(
 									"-----------------------------------------------------\n",
 								);
 							} else if (!skipFlush) {
 								buffer = []; // Clear whitespace-only buffers
-								lastFlushedLine = lineCount;
+								lastFlushedLine = state.line;
 							}
 						}
 

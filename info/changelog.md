@@ -1,10 +1,15 @@
 Commit elboration worth noting.
 
+- defined datatypes for quaternions, lattices, fluxons and voids in paradigm, and implemented a lattice builder
+- defined operations of datatypes in processor
+- implemented adaptive error display  	
+
+---
 
 - created a registrar to bookkeep variable and function bindings; and perform as a statemachine during runtime, keeping line numbers and current scopes (phasors) and optimized it
 - scope management via phases and phasors in registrar
 - designated ~~handler~~ orchestrator to manage and overlook all operations and commands for the processing stream, connecting parser, dispatcher, punisher and registrar
-- optimized inviglator and resolvers
+- optimized invigilator and resolvers
 
 ---
 
